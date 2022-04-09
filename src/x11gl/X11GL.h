@@ -1,6 +1,6 @@
 
-#ifndef _XSTUFF_HPP
-#define _XSTUFF_HPP
+#ifndef _X11GL_HPP
+#define _X11GL_HPP
 
 
 #ifndef __APPLE__
@@ -32,5 +32,5 @@ class X11GL {
 };
 
 
-#endif //_XSTUFF_HPP
+#endif //_X11GL_HPP
 
