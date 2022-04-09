@@ -1,5 +1,5 @@
 #include <stdio.h>
-//#include <X11GL.h>
+#include "X11GL/X11GL.h"
 
 int main(int argc, char** argv) {
   
