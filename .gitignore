@@ -30,3 +30,16 @@
 *.exe
 *.out
 *.app
+
+*.make
+*.cmake
+*.ninja
+*.tcl
+*log
+*.bin
+*cache
+*marks
+build/**
+CMakeFiles/**
+CMakeCache.txt
+X11GL

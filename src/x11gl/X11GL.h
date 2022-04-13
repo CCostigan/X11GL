@@ -27,7 +27,9 @@ class X11GL {
     public:
         X11GL();
         virtual ~X11GL();
-        void init(std::string, int, float);
+        void test(std::string, int, float);
+        void initX11();
+        void initGL(Display *);
         int render();
 };
 
