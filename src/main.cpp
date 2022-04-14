@@ -5,8 +5,9 @@ int main(int argc, char** argv) {
   
   X11GL x11gl;
   x11gl.test("", 0, 0.0);
-  x11gl.initX11();
+  //x11gl.initX11();
   //x11gl.initGL();
+  x11gl.init();
   x11gl.render();
   printf("Done!\n");
 }
