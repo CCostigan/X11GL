@@ -14,9 +14,10 @@ X11GL::~X11GL() {
 void X11GL::test(std::string s, int i, float d) {
     printf("(X11) test called: %s %d %f\n", s.c_str(), i, d);
 }
+
 static GLint gear1;
-void gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width,
-     GLint teeth, GLfloat tooth_depth)
+void gear(GLfloat inner_radius, GLfloat outer_radius, 
+    GLfloat width, GLint teeth, GLfloat tooth_depth)
 {
    GLint i;
    GLfloat r0, r1, r2;
@@ -143,7 +144,7 @@ void gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width,
 
 
 void X11GL::xmain(bool showinfo) {
-    printf("(X11) Init called:\n");
+    printf("(X11) XMain called:\n");
     Display *disp;
     Window xwnd;
     GLXContext xctx;
@@ -154,29 +155,28 @@ void X11GL::xmain(bool showinfo) {
     int white;
     int black;
     int red, green, blue;
+    std::string caption = "TEST";
 
     char *dispvar = getenv("DISPLAY");
-    disp = XOpenDisplay(dispvar); //XOpenDisplay((char*)0);
-    std::string caption = "TEST";
+    disp = XOpenDisplay(dispvar); 
     getwindow(disp, xwnd, xctx, 0,0,800,600, caption);
     XMapWindow(disp, xwnd);
     glXMakeCurrent(disp, xwnd, xctx);
-    reshape(300, 300);
-
+    reshapewindow(20, 20, 1024, 768) ;
+    
     if (showinfo) info();
     init();
     
-    //Shut down
-
     mainloop(disp, xwnd, xctx);
 
+    //Shut down
     glXDestroyContext(disp, xctx);
     XDestroyWindow(disp, xwnd);
     XCloseDisplay(disp);  
-
 }
 
-int X11GL::getwindow(Display* disp, Window& xwin, GLXContext& xctx, int x, int y, int w, int h, std::string& caption) {
+int X11GL::getwindow(Display* disp, Window& xwin, GLXContext& xctx
+    , int x, int y, int w, int h, std::string& caption) {
    int attrib[] = { GLX_RGBA,
 		    GLX_RED_SIZE, 1,
 		    GLX_GREEN_SIZE, 1,
@@ -222,7 +222,7 @@ int X11GL::getwindow(Display* disp, Window& xwin, GLXContext& xctx, int x, int y
       sizehints.flags = USSize | USPosition;
       XSetNormalHints(disp, win, &sizehints);
       XSetStandardProperties(disp, win, caption.c_str(), caption.c_str(),
-                              None, (char **)NULL, 0, &sizehints);
+        None, (char **)NULL, 0, &sizehints);
    }
 
    ctx = glXCreateContext( disp, visinfo, NULL, True );
@@ -241,8 +241,8 @@ int X11GL::getwindow(Display* disp, Window& xwin, GLXContext& xctx, int x, int y
 void X11GL::init() {
     static GLfloat pos[4] = { 5.0, 5.0, 10.0, 0.0 };
     static GLfloat red[4] = { 0.8, 0.1, 0.0, 1.0 };
-    static GLfloat green[4] = { 0.0, 0.8, 0.2, 1.0 };
-    static GLfloat blue[4] = { 0.2, 0.2, 1.0, 1.0 };
+    static GLfloat grn[4] = { 0.0, 0.8, 0.2, 1.0 };
+    static GLfloat blu[4] = { 0.2, 0.2, 1.0, 1.0 };
 
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
     glEnable(GL_CULL_FACE);
@@ -260,10 +260,9 @@ void X11GL::init() {
     glEnable(GL_NORMALIZE);
     printf("GLX11 init done:\n");
 }
-void X11GL::reshape(int w, int h) {
+void X11GL::reshapewindow(int x, int y, int w, int h) {
     GLfloat ar = (GLfloat) h / (GLfloat) w;
-
-    glViewport(0, 0, (GLint) w, (GLint) h);
+    glViewport((GLint) x,(GLint) y, (GLint) w, (GLint) h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glFrustum(-1.0, 1.0, -ar, ar, 5.0, 60.0);
@@ -272,7 +271,7 @@ void X11GL::reshape(int w, int h) {
     glTranslatef(0.0, 0.0, -40.0);
     printf("GLX11 reshape done:\n");
 }
-void X11GL::render(Display *disp, GLXDrawable draw
+void X11GL::renderwindow(Display *disp, GLXDrawable draw
     , float vrx, float vry, float vrz, float alpha) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -291,7 +290,7 @@ void X11GL::render(Display *disp, GLXDrawable draw
         glPopMatrix();
 
     glPopMatrix();    
-    //printf("GLX11 render done:\n");
+    printf("GLX11 render done:\n");
 }
 void X11GL::info() {
     printf("GL_RENDERER   = %s\n", (char *) glGetString(GL_RENDERER));
@@ -300,7 +299,7 @@ void X11GL::info() {
     printf("GL_EXTENSIONS = %s\n", (char *) glGetString(GL_EXTENSIONS));
 }
 void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx) {
-
+    printf("GLX11 mainloop started.\n");
     bool done = false;
     char text[255];
     KeySym key;
@@ -335,7 +334,7 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx) {
                 printf("%s\n", text);
             break;
         }
-        render(disp, xwnd, 10.0, 20.0, 30.0, 45.0);
+        renderwindow(disp, xwnd, 10.0, 20.0, 30.0, 45.0);
     }
     printf("GLX11 mainloop done:\n");
 }

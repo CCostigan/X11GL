@@ -35,8 +35,8 @@ class X11GL {
         void xmain(bool);        
         // void initX11();
         // void initGL(Display *);
-        void reshape(int, int);
-        void render(Display *, GLXDrawable, float, float, float, float);
+        void reshapewindow(int, int, int, int);
+        void renderwindow(Display *, GLXDrawable, float, float, float, float);
         void mainloop(Display *, Window, GLXContext);
         void info(void);
 };
