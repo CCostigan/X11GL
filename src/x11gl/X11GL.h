@@ -14,12 +14,14 @@
     //#include <GL/glxew.h>
     #include <GL/glxext.h>
     //#include <GL/glxint.h>
+    #include <GL/glu.h>
 #endif
 
 #include <string>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <math.h>
 
 
 class X11GL {
@@ -28,10 +30,15 @@ class X11GL {
         X11GL();
         virtual ~X11GL();
         void test(std::string, int, float);
-        void init();
-        void initX11();
-        void initGL(Display *);
-        int render();
+        int getwindow(Display* , Window& , GLXContext& , int , int , int , int , std::string&);
+        void init();        
+        void xmain(bool);        
+        // void initX11();
+        // void initGL(Display *);
+        void reshape(int, int);
+        void render(Display *, GLXDrawable, float, float, float, float);
+        void mainloop(Display *, Window, GLXContext);
+        void info(void);
 };
 
 
