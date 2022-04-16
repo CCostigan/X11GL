@@ -30,13 +30,13 @@ class X11GL {
         X11GL();
         virtual ~X11GL();
         void test(std::string, int, float);
-        int getwindow(Display* , Window& , GLXContext& , int , int , int , int , std::string&);
+        int getwindow(Display* , Window* , GLXContext* , int , int , int , int , std::string&);
         void init();        
-        void xmain(bool);        
+        void xmain(int, int, int, int, bool);        
         // void initX11();
         // void initGL(Display *);
-        void reshapewindow(int, int, int, int);
-        void renderwindow(Display *, GLXDrawable, float, float, float, float);
+        void reshapewindow(int, int);
+        void renderwindow(Display *, GLXDrawable);
         void mainloop(Display *, Window, GLXContext);
         void info(void);
 };
