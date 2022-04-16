@@ -357,7 +357,18 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
         case KeyPress:
             if (XLookupString(&evnt.xkey, text, 255, &key, 0) == 1) {
                 if (evnt.xkey.keycode == 9) done = true;
-                else printf("You pressed '%c'\n", text[0]); // fflush(stdout);
+                //if (evnt.xkey.keycode == 38,38,40,25) vrx += 0.1;
+                switch (evnt.xkey.keycode) {
+                    case 38: vry-=1.0; break;
+                    case 40: vry+=1.0; break;
+                    case 39: vrx+=1.0; break;
+                    case 25: vrx-=1.0; break;
+                    case 52: vrz+=1.0; break;
+                    case 53: vrz-=1.0; break;
+                    default:
+                        printf("You pressed %d '%c'\n", evnt.xkey.keycode, text[0]); // fflush(stdout);
+                    break;
+                }
             }
             break;
         case ConfigureNotify:         
