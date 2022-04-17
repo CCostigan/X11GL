@@ -179,7 +179,7 @@ void X11GL::init() {
 void X11GL::reshapewindow(int w, int h) {
     GLfloat ar = (GLfloat)h / (GLfloat)w;    
     // glXMakeCurrent(disp, None, NULL);
-    // newContext(disp, xwin, 0, 0, w, h);    
+    newContext(disp, xwin, 0, 0, w, h);    
     // glXMakeCurrent(disp, xwin, xctx);
     //getContext();
     glViewport(0, 0, (GLint)w, (GLint)h);
@@ -244,112 +244,115 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
     XWindowAttributes attribs;
     while (!done) {
         alpha += 1.0;
-        XNextEvent(disp, &evnt);
-        switch (evnt.type) {
-        case Expose:
-            //printf("Expose %d\n", evnt.xexpose.count);             
-            if (evnt.xexpose.count == 0 || true) XGetWindowAttributes(disp, xwnd, &attribs);                
-            break;
-        case KeyPress:
-            switch (evnt.xkey.keycode) {
-                case 80: vrx-=1.0; break;
-                case 88: vrx+=1.0; break;
-                case 83: vry+=1.0; break;
-                case 85: vry-=1.0; break;
-                case 79: vrz+=1.0; break;
-                case 81: vrz-=1.0; break;
-                case 87: zoom+=1.0; break;
-                case 89: zoom-=1.0; break;
-                default:
-                    printf("You pressed %d '%c'\n", evnt.xkey.keycode, text[0]); // fflush(stdout);
+        while (XPending(disp) > 0) {
+            XNextEvent(disp, &evnt);
+            switch (evnt.type) {
+            case Expose:
+                //printf("Expose %d\n", evnt.xexpose.count);             
+                if (evnt.xexpose.count == 0 || true) XGetWindowAttributes(disp, xwnd, &attribs);                
                 break;
-            }
-            if (XLookupString(&evnt.xkey, text, 255, &key, 0) == 1) {
-                if (evnt.xkey.keycode == 9) done = true;
-                //if (evnt.xkey.keycode == 38,38,40,25) vrx += 0.1;
-            }
-            break;
-        case PropertyNotify:       
-            //printf("PropertyNotify %d\n", evnt.xproperty.type); 
-            break;
-        case ConfigureNotify: //Called when moving the window around
-            //printf("ConfigureNotify\n");             
-            break;
-        case ResizeRequest: 
-            printf("ResizeRequest\n");   
-            XGetWindowAttributes(disp, xwnd, &attribs);   
-            getwindow(attribs.x, attribs.y, evnt.xresizerequest.width, evnt.xresizerequest.height, caption);
-            reshapewindow(evnt.xresizerequest.width ,evnt.xresizerequest.height);
-            break;
-        case ClientMessage:
-            printf("ClientMessage case hit!\n");
-            break;
-        case ButtonPress:
-            //printf("ButtonPress %d, %d, %d\n", evnt.xbutton.button, evnt.xbutton.x, evnt.xbutton.y); 
-            dn.x = evnt.xbutton.x;
-            dn.y = evnt.xbutton.y;
-            //sprintf(text, "Test %d %d", dn.x, dn.y);
-            break;
-        case  ButtonRelease:        
-            //printf("ButtonRelease %d, %d, %d\n", evnt.xbutton.button, evnt.xbutton.x, evnt.xbutton.y); 
-            // XSetForeground(disp, gctx, green);
-            // XDrawLine(disp, xwnd, gctx, x, y, up.x, up.y);
-            up.x = evnt.xbutton.x;
-            up.y = evnt.xbutton.y;
-            // XSetForeground(disp, gctx, blue);
-            // XDrawString(disp,xwnd, gctx, up.x, up.y, text, strlen(text));
-            //printf("%s\n", text);
-            break;
-        case  MotionNotify:   
-            loc.x = evnt.xmotion.x;
-            loc.y = evnt.xmotion.y;
-            if(evnt.xmotion.state != 0 && false) 
-                printf("Motionotify %d %d %d %d\n", evnt.xmotion.state, evnt.xmotion.type, evnt.xmotion.x, evnt.xmotion.y); 
-            if (evnt.xmotion.state==256) {                
-                vry+=(loc.x-dn.x)/1.0;
-                vrx+=(loc.y-dn.y)/1.0;
-                dn.x=loc.x;
-                dn.y=loc.y;
-            }
-            break;
+            case KeyPress:
+                switch (evnt.xkey.keycode) {
+                    case 80: vrx-=1.0; break;
+                    case 88: vrx+=1.0; break;
+                    case 83: vry+=1.0; break;
+                    case 85: vry-=1.0; break;
+                    case 79: vrz+=1.0; break;
+                    case 81: vrz-=1.0; break;
+                    case 87: zoom+=1.0; break;
+                    case 89: zoom-=1.0; break;
+                    default:
+                        printf("You pressed %d '%c'\n", evnt.xkey.keycode, text[0]); // fflush(stdout);
+                    break;
+                }
+                if (XLookupString(&evnt.xkey, text, 255, &key, 0) == 1) {
+                    if (evnt.xkey.keycode == 9) done = true;
+                    //if (evnt.xkey.keycode == 38,38,40,25) vrx += 0.1;
+                }
+                break;
+            case PropertyNotify:       
+                //printf("PropertyNotify %d\n", evnt.xproperty.type); 
+                break;
+            case ConfigureNotify: //Called when moving the window around
+                //printf("ConfigureNotify\n");             
+                break;
+            case ResizeRequest: 
+                printf("ResizeRequest\n");   
+                XGetWindowAttributes(disp, xwnd, &attribs);   
+                getwindow(attribs.x, attribs.y, evnt.xresizerequest.width, evnt.xresizerequest.height, caption);
+                reshapewindow(evnt.xresizerequest.width ,evnt.xresizerequest.height);
+                break;
+            case ClientMessage:
+                printf("ClientMessage case hit!\n");
+                break;
+            case ButtonPress:
+                //printf("ButtonPress %d, %d, %d\n", evnt.xbutton.button, evnt.xbutton.x, evnt.xbutton.y); 
+                dn.x = evnt.xbutton.x;
+                dn.y = evnt.xbutton.y;
+                //sprintf(text, "Test %d %d", dn.x, dn.y);
+                break;
+            case  ButtonRelease:        
+                //printf("ButtonRelease %d, %d, %d\n", evnt.xbutton.button, evnt.xbutton.x, evnt.xbutton.y); 
+                // XSetForeground(disp, gctx, green);
+                // XDrawLine(disp, xwnd, gctx, x, y, up.x, up.y);
+                up.x = evnt.xbutton.x;
+                up.y = evnt.xbutton.y;
+                // XSetForeground(disp, gctx, blue);
+                // XDrawString(disp,xwnd, gctx, up.x, up.y, text, strlen(text));
+                //printf("%s\n", text);
+                break;
+            case  MotionNotify:   
+                loc.x = evnt.xmotion.x;
+                loc.y = evnt.xmotion.y;
+                if(evnt.xmotion.state != 0 && false) 
+                    printf("Motionotify %d %d %d %d\n", evnt.xmotion.state, evnt.xmotion.type, evnt.xmotion.x, evnt.xmotion.y); 
+                if (evnt.xmotion.state==256) {                
+                    vry+=(loc.x-dn.x)/1.0;
+                    vrx+=(loc.y-dn.y)/1.0;
+                    dn.x=loc.x;
+                    dn.y=loc.y;
+                }
+                break;
 
-        //case  KeyPress:             printf("KeyPress"); break;
-        //case  KeyRelease:           printf("KeyRelease"); break;
-        //case  ButtonPress:          printf("ButtonPress"); break;
-        //case  ButtonRelease:        printf("ButtonRelease\n"); break;
-        //case  MotionNotify:         printf("Motionotify\n"); break;
-        case  EnterNotify:          printf("EnterNotify\n"); break;
-        case  LeaveNotify:          printf("LeaveNotify\n"); break;
-        case  FocusIn:              printf("FocusIn\n"); break;
-        case  FocusOut:             printf("FocusOut\n"); break;
-        case  KeymapNotify:         printf("KeyMapNotify\n"); break;
-        //case  Expose:               printf("Expose\n"); break;
-        case  GraphicsExpose:       printf("GraphicsExpose\n"); break;
-        case  NoExpose:             printf("NoExpose\n"); break;
-        case  VisibilityNotify:     printf("VisibilityNotify\n"); break;
-        case  CreateNotify:         printf("CreateNotify\n"); break;
-        case  DestroyNotify:        printf("DestroyNotify\n"); break;
-        case  UnmapNotify:          printf("UnmapNotify\n"); break;
-        case  MapNotify:            printf("MapNotify\n"); break;
-        case  MapRequest:           printf("MapRequest\n"); break;
-        case  ReparentNotify:       printf("ReparentNotify\n"); break;
-        //case  ConfigureNotify:      printf("ConfigureNotify\n"); break;
-        case  ConfigureRequest:     printf("ConfigureRequest\n"); break;
-        case  GravityNotify:        printf("GravityNotify\n"); break;
-        //case  ResizeRequest:        printf("ResizeRequest\n"); break;
-        case  CirculateNotify:      printf("CirculateNotify\n"); break;
-        case  CirculateRequest:     printf("CirculateRequest\n"); break;
-        //case  PropertyNotify:       printf("PropertyNotify\n"); break;
-        case  SelectionClear:       printf("SelectionClear\n"); break;
-        case  SelectionRequest:     printf("SelectionRequest\n"); break;
-        case  SelectionNotify:      printf("SelectionNotify\n"); break;
-        case  ColormapNotify:       printf("ColormapNotify\n"); break;
-        //case  ClientMessage:        printf("ClientMessage\n"); break;
-        case  MappingNotify:        printf("MappingNotify\n"); break;
-        case  GenericEvent:         printf("GenericEvent\n"); break;
-        case  LASTEvent:            printf("LASTEvent\n"); break;	/* must be bigger than any event # */        
-        default: printf("Default case!\n");
-        break;
+            //case  KeyPress:             printf("KeyPress"); break;
+            //case  KeyRelease:           printf("KeyRelease"); break;
+            //case  ButtonPress:          printf("ButtonPress"); break;
+            //case  ButtonRelease:        printf("ButtonRelease\n"); break;
+            //case  MotionNotify:         printf("Motionotify\n"); break;
+            case  EnterNotify:          printf("EnterNotify\n"); break;
+            case  LeaveNotify:          printf("LeaveNotify\n"); break;
+            case  FocusIn:              printf("FocusIn\n"); break;
+            case  FocusOut:             printf("FocusOut\n"); break;
+            case  KeymapNotify:         printf("KeyMapNotify\n"); break;
+            //case  Expose:               printf("Expose\n"); break;
+            case  GraphicsExpose:       printf("GraphicsExpose\n"); break;
+            case  NoExpose:             printf("NoExpose\n"); break;
+            case  VisibilityNotify:     printf("VisibilityNotify\n"); break;
+            case  CreateNotify:         printf("CreateNotify\n"); break;
+            case  DestroyNotify:        printf("DestroyNotify\n"); break;
+            case  UnmapNotify:          printf("UnmapNotify\n"); break;
+            case  MapNotify:            printf("MapNotify\n"); break;
+            case  MapRequest:           printf("MapRequest\n"); break;
+            case  ReparentNotify:       printf("ReparentNotify\n"); break;
+            //case  ConfigureNotify:      printf("ConfigureNotify\n"); break;
+            case  ConfigureRequest:     printf("ConfigureRequest\n"); break;
+            case  GravityNotify:        printf("GravityNotify\n"); break;
+            //case  ResizeRequest:        printf("ResizeRequest\n"); break;
+            case  CirculateNotify:      printf("CirculateNotify\n"); break;
+            case  CirculateRequest:     printf("CirculateRequest\n"); break;
+            //case  PropertyNotify:       printf("PropertyNotify\n"); break;
+            case  SelectionClear:       printf("SelectionClear\n"); break;
+            case  SelectionRequest:     printf("SelectionRequest\n"); break;
+            case  SelectionNotify:      printf("SelectionNotify\n"); break;
+            case  ColormapNotify:       printf("ColormapNotify\n"); break;
+            //case  ClientMessage:        printf("ClientMessage\n"); break;
+            case  MappingNotify:        printf("MappingNotify\n"); break;
+            case  GenericEvent:         printf("GenericEvent\n"); break;
+            case  LASTEvent:            printf("LASTEvent\n"); break;	/* must be bigger than any event # */        
+            default: printf("Default case!\n");
+            break;
+            }
+
         }
         renderwindow(disp, xwnd);
     }
