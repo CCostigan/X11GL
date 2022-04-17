@@ -87,7 +87,11 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
     attr.background_pixel = 0;
     attr.border_pixel = 0;
     attr.colormap = XCreateColormap(disp, root, visinfo->visual, AllocNone);
-    attr.event_mask = ExposureMask //| StructureNotifyMask | ConfigureNotify //ResizeRedirectMask //FocusChangeMask
+    attr.event_mask = ExposureMask 
+                    | StructureNotifyMask 
+                    //| ConfigureNotify
+                    //| ResizeRedirectMask
+                    //| FocusChangeMask
                     | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask
                     | PointerMotionMask | PropertyChangeMask
                 ;
@@ -125,6 +129,21 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
     return 0;
 }
 
+void X11GL::reshapewindow(int w, int h) {
+    GLfloat ar = (GLfloat)h / (GLfloat)w;    
+    // glXMakeCurrent(disp, None, NULL);
+    // newContext(disp, xwin, 0, 0, w, h);    
+    // glXMakeCurrent(disp, xwin, xctx);
+    //getContext();
+    glViewport(0, 0, (GLint)w, (GLint)h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glFrustum(-1.0, 1.0, -ar, ar, 4.0, 100.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef(0.0, 0.0, zoom);    
+    printf("GLX11 reshape done: %d %d\n", w, h);
+}
 void newContext(Display *disp, Window xwin, int x, int y, int w, int h) {    
     XVisualInfo *visinfo;
     visinfo = glXChooseVisual(disp, scrnum, attrib);
@@ -174,22 +193,6 @@ void X11GL::init() {
         glEndList();        
     glEnable(GL_NORMALIZE);
     printf("GLX11 init done:\n");
-}
-
-void X11GL::reshapewindow(int w, int h) {
-    GLfloat ar = (GLfloat)h / (GLfloat)w;    
-    // glXMakeCurrent(disp, None, NULL);
-    newContext(disp, xwin, 0, 0, w, h);    
-    // glXMakeCurrent(disp, xwin, xctx);
-    //getContext();
-    glViewport(0, 0, (GLint)w, (GLint)h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glFrustum(-1.0, 1.0, -ar, ar, 4.0, 100.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0.0, 0.0, zoom);    
-    printf("GLX11 reshape done: %d %d\n", w, h);
 }
 
 void X11GL::renderwindow(Display *disp, GLXDrawable xwnd) {
@@ -271,16 +274,14 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
                 }
                 break;
             case PropertyNotify:       
-                //printf("PropertyNotify %d\n", evnt.xproperty.type); 
+                printf("PropertyNotify %d\n", evnt.xproperty.type); 
                 break;
             case ConfigureNotify: //Called when moving the window around
-                //printf("ConfigureNotify\n");             
+                //printf("ConfigureNotify %d %d\n", evnt.xconfigure.type, evnt.xconfigure.event);
+                reshapewindow(evnt.xconfigure.width ,evnt.xconfigure.height);
                 break;
             case ResizeRequest: 
-                printf("ResizeRequest\n");   
-                XGetWindowAttributes(disp, xwnd, &attribs);   
-                getwindow(attribs.x, attribs.y, evnt.xresizerequest.width, evnt.xresizerequest.height, caption);
-                reshapewindow(evnt.xresizerequest.width ,evnt.xresizerequest.height);
+                printf("ResizeRequest.  Don't use this one\n");   
                 break;
             case ClientMessage:
                 printf("ClientMessage case hit!\n");
@@ -349,7 +350,7 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
             case  MappingNotify:        printf("MappingNotify\n"); break;
             case  GenericEvent:         printf("GenericEvent\n"); break;
             case  LASTEvent:            printf("LASTEvent\n"); break;	/* must be bigger than any event # */        
-            default: printf("Default case!\n");
+            default: //printf("Default case!\n");
             break;
             }
 
