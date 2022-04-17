@@ -1,149 +1,47 @@
 #include "X11GL.h"
+#include "gears.h"
 
 // Much of this code lifted from this Apple example
 // https://opensource.apple.com/source/X11apps/X11apps-13/glxgears.c.auto.html
+// https://github.com/davidanthonygardner/glxgears/blob/master/glxgears.c
 
-static GLfloat vrx = 20.0, vry = 30.0, vrz = 0.0;
+
+static GLfloat vrx = 0.0, vry = 0.0, vrz = 0.0, zoom = -40.0;
 static GLfloat alpha = 0.0;
 static int gear1, gear2, gear3;
-
-void
-gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width,
-     GLint teeth, GLfloat tooth_depth)
-{
-   GLint i;
-   GLfloat r0, r1, r2;
-   GLfloat angle, da;
-   GLfloat u, v, len;
-
-   r0 = inner_radius;
-   r1 = outer_radius - tooth_depth / 2.0;
-   r2 = outer_radius + tooth_depth / 2.0;
-
-   da = 2.0 * M_PI / teeth / 4.0;
-
-   glShadeModel(GL_FLAT);
-
-   glNormal3f(0.0, 0.0, 1.0);
-
-   /* draw front face */
-   glBegin(GL_QUAD_STRIP);
-   for (i = 0; i <= teeth; i++) {
-      angle = i * 2.0 * M_PI / teeth;
-      glVertex3f(r0 * cos(angle), r0 * sin(angle), width * 0.5);
-      glVertex3f(r1 * cos(angle), r1 * sin(angle), width * 0.5);
-      if (i < teeth) {
-	 glVertex3f(r0 * cos(angle), r0 * sin(angle), width * 0.5);
-	 glVertex3f(r1 * cos(angle + 3 * da), r1 * sin(angle + 3 * da),
-		    width * 0.5);
-      }
-   }
-   glEnd();
-
-   /* draw front sides of teeth */
-   glBegin(GL_QUADS);
-   da = 2.0 * M_PI / teeth / 4.0;
-   for (i = 0; i < teeth; i++) {
-      angle = i * 2.0 * M_PI / teeth;
-
-      glVertex3f(r1 * cos(angle), r1 * sin(angle), width * 0.5);
-      glVertex3f(r2 * cos(angle + da), r2 * sin(angle + da), width * 0.5);
-      glVertex3f(r2 * cos(angle + 2 * da), r2 * sin(angle + 2 * da),
-		 width * 0.5);
-      glVertex3f(r1 * cos(angle + 3 * da), r1 * sin(angle + 3 * da),
-		 width * 0.5);
-   }
-   glEnd();
-
-   glNormal3f(0.0, 0.0, -1.0);
-
-   /* draw back face */
-   glBegin(GL_QUAD_STRIP);
-   for (i = 0; i <= teeth; i++) {
-      angle = i * 2.0 * M_PI / teeth;
-      glVertex3f(r1 * cos(angle), r1 * sin(angle), -width * 0.5);
-      glVertex3f(r0 * cos(angle), r0 * sin(angle), -width * 0.5);
-      if (i < teeth) {
-	 glVertex3f(r1 * cos(angle + 3 * da), r1 * sin(angle + 3 * da),
-		    -width * 0.5);
-	 glVertex3f(r0 * cos(angle), r0 * sin(angle), -width * 0.5);
-      }
-   }
-   glEnd();
-
-   /* draw back sides of teeth */
-   glBegin(GL_QUADS);
-   da = 2.0 * M_PI / teeth / 4.0;
-   for (i = 0; i < teeth; i++) {
-      angle = i * 2.0 * M_PI / teeth;
-
-      glVertex3f(r1 * cos(angle + 3 * da), r1 * sin(angle + 3 * da),
-		 -width * 0.5);
-      glVertex3f(r2 * cos(angle + 2 * da), r2 * sin(angle + 2 * da),
-		 -width * 0.5);
-      glVertex3f(r2 * cos(angle + da), r2 * sin(angle + da), -width * 0.5);
-      glVertex3f(r1 * cos(angle), r1 * sin(angle), -width * 0.5);
-   }
-   glEnd();
-
-   /* draw outward faces of teeth */
-   glBegin(GL_QUAD_STRIP);
-   for (i = 0; i < teeth; i++) {
-      angle = i * 2.0 * M_PI / teeth;
-
-      glVertex3f(r1 * cos(angle), r1 * sin(angle), width * 0.5);
-      glVertex3f(r1 * cos(angle), r1 * sin(angle), -width * 0.5);
-      u = r2 * cos(angle + da) - r1 * cos(angle);
-      v = r2 * sin(angle + da) - r1 * sin(angle);
-      len = sqrt(u * u + v * v);
-      u /= len;
-      v /= len;
-      glNormal3f(v, -u, 0.0);
-      glVertex3f(r2 * cos(angle + da), r2 * sin(angle + da), width * 0.5);
-      glVertex3f(r2 * cos(angle + da), r2 * sin(angle + da), -width * 0.5);
-      glNormal3f(cos(angle), sin(angle), 0.0);
-      glVertex3f(r2 * cos(angle + 2 * da), r2 * sin(angle + 2 * da),
-		 width * 0.5);
-      glVertex3f(r2 * cos(angle + 2 * da), r2 * sin(angle + 2 * da),
-		 -width * 0.5);
-      u = r1 * cos(angle + 3 * da) - r2 * cos(angle + 2 * da);
-      v = r1 * sin(angle + 3 * da) - r2 * sin(angle + 2 * da);
-      glNormal3f(v, -u, 0.0);
-      glVertex3f(r1 * cos(angle + 3 * da), r1 * sin(angle + 3 * da),
-		 width * 0.5);
-      glVertex3f(r1 * cos(angle + 3 * da), r1 * sin(angle + 3 * da),
-		 -width * 0.5);
-      glNormal3f(cos(angle), sin(angle), 0.0);
-   }
-
-   glVertex3f(r1 * cos(0), r1 * sin(0), width * 0.5);
-   glVertex3f(r1 * cos(0), r1 * sin(0), -width * 0.5);
-
-   glEnd();
-
-   glShadeModel(GL_SMOOTH);
-
-   /* draw inside radius cylinder */
-   glBegin(GL_QUAD_STRIP);
-   for (i = 0; i <= teeth; i++) {
-      angle = i * 2.0 * M_PI / teeth;
-      glNormal3f(-cos(angle), -sin(angle), 0.0);
-      glVertex3f(r0 * cos(angle), r0 * sin(angle), -width * 0.5);
-      glVertex3f(r0 * cos(angle), r0 * sin(angle), width * 0.5);
-   }
-   glEnd();
-}
+static Display *disp;
+static Window xwin;
+static GLXContext xctx;
+int attrib[] = {GLX_RGBA,
+                GLX_RED_SIZE, 1,
+                GLX_GREEN_SIZE, 1,
+                GLX_BLUE_SIZE, 1,
+                GLX_DOUBLEBUFFER,
+                GLX_DEPTH_SIZE, 1,
+                None};
+int scrnum;
+std::string caption = "OpenGL X11 Test";
 
 
 
 X11GL::X11GL()
 {
     printf("(X11) Constructor called!\n");
+    char *dispvar = getenv("DISPLAY");
+    disp = XOpenDisplay(dispvar);
 }
 
 X11GL::~X11GL()
 {
     printf("(X11) Destructor called!\n");
+    // Shut down
+    glDeleteLists(gear1, 1);
+    glDeleteLists(gear2, 1);
+    glDeleteLists(gear3, 1);
+    glXMakeCurrent(disp, None, NULL);    
+    glXDestroyContext(disp, xctx);
+    XDestroyWindow(disp, xwin);
+    XCloseDisplay(disp);    
 }
 
 void X11GL::test(std::string s, int i, float d)
@@ -154,46 +52,20 @@ void X11GL::test(std::string s, int i, float d)
 void X11GL::xmain(int x, int y, int w, int h, bool showinfo)
 {
     printf("(X11) XMain called:\n");
-    Display *disp;
-    Window xwnd;
-    GLXContext xctx;
-    // GC gctx;
-    Visual *xvis;
-    XSetWindowAttributes xattrs;
-    int scrn;
-    int white;
-    int black;
-    int red, green, blue;
-    std::string caption = "OpenGL X11 Test";
 
-    char *dispvar = getenv("DISPLAY");
-    disp = XOpenDisplay(dispvar);
-    getwindow(disp, &xwnd, &xctx, x, y, w, h, caption);
-    XMapWindow(disp, xwnd);
-    glXMakeCurrent(disp, xwnd, xctx);
+    getwindow(x, y, w, h, caption);
+    XMapWindow(disp, xwin);
+    glXMakeCurrent(disp, None, NULL);
+    glXMakeCurrent(disp, xwin, xctx);
     reshapewindow(w, h);
 
     if (showinfo) info();
     init();
 
-    mainloop(disp, xwnd, xctx);
-
-    // Shut down
-    glXDestroyContext(disp, xctx);
-    XDestroyWindow(disp, xwnd);
-    XCloseDisplay(disp);
+    mainloop(disp, xwin, xctx);
 }
 
-int X11GL::getwindow(Display *disp, Window *xwin, GLXContext *xctx, int x, int y, int w, int h, std::string &caption)
-{
-    int attrib[] = {GLX_RGBA,
-                    GLX_RED_SIZE, 1,
-                    GLX_GREEN_SIZE, 1,
-                    GLX_BLUE_SIZE, 1,
-                    GLX_DOUBLEBUFFER,
-                    GLX_DEPTH_SIZE, 1,
-                    None};
-    int scrnum;
+int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
     XSetWindowAttributes attr;
     unsigned long mask;
     Window root;
@@ -215,8 +87,10 @@ int X11GL::getwindow(Display *disp, Window *xwin, GLXContext *xctx, int x, int y
     attr.background_pixel = 0;
     attr.border_pixel = 0;
     attr.colormap = XCreateColormap(disp, root, visinfo->visual, AllocNone);
-    attr.event_mask = StructureNotifyMask | ExposureMask |
-                      KeyPressMask | ButtonPressMask | ResizeRedirectMask;
+    attr.event_mask = ExposureMask //| StructureNotifyMask | ConfigureNotify //ResizeRedirectMask //FocusChangeMask
+                    | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask
+                    | PointerMotionMask | PropertyChangeMask
+                ;
     mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 
     win = XCreateWindow(disp, root, x, y, w, h,
@@ -245,13 +119,30 @@ int X11GL::getwindow(Display *disp, Window *xwin, GLXContext *xctx, int x, int y
 
     XFree(visinfo);
 
-    *xwin = win;
-    *xctx = ctx;
+    xwin = win;
+    xctx = ctx;
     printf("GLX11 getwindow done:\n");
     return 0;
 }
-void X11GL::init()
-{
+
+void newContext(Display *disp, Window xwin, int x, int y, int w, int h) {    
+    XVisualInfo *visinfo;
+    visinfo = glXChooseVisual(disp, scrnum, attrib);
+        XSizeHints sizehints;
+        sizehints.x = x;
+        sizehints.y = y;
+        sizehints.width = w;
+        sizehints.height = h;
+        sizehints.flags = USSize | USPosition;
+        XSetNormalHints(disp, xwin, &sizehints);
+        XSetStandardProperties(disp, xwin, caption.c_str(), caption.c_str(),
+                               None, (char **)NULL, 0, &sizehints);    
+    xctx = glXCreateContext(disp, visinfo, NULL, True);
+    XFree(visinfo);
+    XStoreName(disp, xwin, "VERY SIMPLE APPLICATION");
+}
+
+void X11GL::init() {
     static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0};
     static GLfloat red[4] = {0.8, 0.1, 0.0, 1.0};
     static GLfloat grn[4] = {0.0, 0.8, 0.2, 1.0};
@@ -284,20 +175,24 @@ void X11GL::init()
     glEnable(GL_NORMALIZE);
     printf("GLX11 init done:\n");
 }
-void X11GL::reshapewindow(int w, int h)
-{
-    GLfloat ar = (GLfloat)h / (GLfloat)w;
+
+void X11GL::reshapewindow(int w, int h) {
+    GLfloat ar = (GLfloat)h / (GLfloat)w;    
+    // glXMakeCurrent(disp, None, NULL);
+    // newContext(disp, xwin, 0, 0, w, h);    
+    // glXMakeCurrent(disp, xwin, xctx);
+    //getContext();
     glViewport(0, 0, (GLint)w, (GLint)h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glFrustum(-1.0, 1.0, -ar, ar, 4.0, 100.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glTranslatef(0.0, 0.0, -40.0);
+    glTranslatef(0.0, 0.0, zoom);    
     printf("GLX11 reshape done: %d %d\n", w, h);
 }
-void X11GL::renderwindow(Display *disp, GLXDrawable draw)
-{
+
+void X11GL::renderwindow(Display *disp, GLXDrawable xwnd) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glPushMatrix();
@@ -325,6 +220,7 @@ void X11GL::renderwindow(Display *disp, GLXDrawable draw)
         glPopMatrix();
 
     glPopMatrix();
+    glXSwapBuffers(disp, xwnd);
 
     //printf("Render... ");
 }
@@ -344,59 +240,84 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
     XEvent evnt;
     struct _point {
         int x, y;
-    } point1, point2;
+    } dn, up, loc;
     XWindowAttributes attribs;
     while (!done) {
+        alpha += 1.0;
         XNextEvent(disp, &evnt);
         switch (evnt.type) {
         case Expose:
-            if (evnt.xexpose.count == 0) {
-                XGetWindowAttributes(disp, xwnd, &attribs);                
-            }
+            //printf("Expose %d\n", evnt.xexpose.count);             
+            if (evnt.xexpose.count == 0 || true) XGetWindowAttributes(disp, xwnd, &attribs);                
             break;
         case KeyPress:
+            switch (evnt.xkey.keycode) {
+                case 80: vrx-=1.0; break;
+                case 88: vrx+=1.0; break;
+                case 83: vry+=1.0; break;
+                case 85: vry-=1.0; break;
+                case 79: vrz+=1.0; break;
+                case 81: vrz-=1.0; break;
+                case 87: zoom+=1.0; break;
+                case 89: zoom-=1.0; break;
+                default:
+                    printf("You pressed %d '%c'\n", evnt.xkey.keycode, text[0]); // fflush(stdout);
+                break;
+            }
             if (XLookupString(&evnt.xkey, text, 255, &key, 0) == 1) {
                 if (evnt.xkey.keycode == 9) done = true;
                 //if (evnt.xkey.keycode == 38,38,40,25) vrx += 0.1;
-                switch (evnt.xkey.keycode) {
-                    case 38: vry-=1.0; break;
-                    case 40: vry+=1.0; break;
-                    case 39: vrx+=1.0; break;
-                    case 25: vrx-=1.0; break;
-                    case 52: vrz+=1.0; break;
-                    case 53: vrz-=1.0; break;
-                    default:
-                        printf("You pressed %d '%c'\n", evnt.xkey.keycode, text[0]); // fflush(stdout);
-                    break;
-                }
             }
             break;
-        case ConfigureNotify:         
-            printf("ConfigureNotify\n");             
+        case PropertyNotify:       
+            //printf("PropertyNotify %d\n", evnt.xproperty.type); 
+            break;
+        case ConfigureNotify: //Called when moving the window around
+            //printf("ConfigureNotify\n");             
             break;
         case ResizeRequest: 
-            printf("ResizeRequest\n");    
+            printf("ResizeRequest\n");   
+            XGetWindowAttributes(disp, xwnd, &attribs);   
+            getwindow(attribs.x, attribs.y, evnt.xresizerequest.width, evnt.xresizerequest.height, caption);
             reshapewindow(evnt.xresizerequest.width ,evnt.xresizerequest.height);
             break;
         case ClientMessage:
             printf("ClientMessage case hit!\n");
             break;
         case ButtonPress:
+            //printf("ButtonPress %d, %d, %d\n", evnt.xbutton.button, evnt.xbutton.x, evnt.xbutton.y); 
+            dn.x = evnt.xbutton.x;
+            dn.y = evnt.xbutton.y;
+            //sprintf(text, "Test %d %d", dn.x, dn.y);
+            break;
+        case  ButtonRelease:        
+            //printf("ButtonRelease %d, %d, %d\n", evnt.xbutton.button, evnt.xbutton.x, evnt.xbutton.y); 
             // XSetForeground(disp, gctx, green);
-            // XDrawLine(disp, xwnd, gctx, x, y, point1.x, point1.y);
-            point1.x = evnt.xbutton.x;
-            point1.y = evnt.xbutton.y;
-            sprintf(text, "Test %d %d", point1.x, point1.y);
+            // XDrawLine(disp, xwnd, gctx, x, y, up.x, up.y);
+            up.x = evnt.xbutton.x;
+            up.y = evnt.xbutton.y;
             // XSetForeground(disp, gctx, blue);
-            // XDrawString(disp,xwnd, gctx, point1.x, point1.y, text, strlen(text));
-            printf("%s\n", text);
+            // XDrawString(disp,xwnd, gctx, up.x, up.y, text, strlen(text));
+            //printf("%s\n", text);
+            break;
+        case  MotionNotify:   
+            loc.x = evnt.xmotion.x;
+            loc.y = evnt.xmotion.y;
+            if(evnt.xmotion.state != 0 && false) 
+                printf("Motionotify %d %d %d %d\n", evnt.xmotion.state, evnt.xmotion.type, evnt.xmotion.x, evnt.xmotion.y); 
+            if (evnt.xmotion.state==256) {                
+                vry+=(loc.x-dn.x)/1.0;
+                vrx+=(loc.y-dn.y)/1.0;
+                dn.x=loc.x;
+                dn.y=loc.y;
+            }
             break;
 
         //case  KeyPress:             printf("KeyPress"); break;
-        case  KeyRelease:           printf("KeyRelease"); break;
+        //case  KeyRelease:           printf("KeyRelease"); break;
         //case  ButtonPress:          printf("ButtonPress"); break;
-        case  ButtonRelease:        printf("ButtonRelease\n"); break;
-        case  MotionNotify:         printf("Motionotify\n"); break;
+        //case  ButtonRelease:        printf("ButtonRelease\n"); break;
+        //case  MotionNotify:         printf("Motionotify\n"); break;
         case  EnterNotify:          printf("EnterNotify\n"); break;
         case  LeaveNotify:          printf("LeaveNotify\n"); break;
         case  FocusIn:              printf("FocusIn\n"); break;
@@ -418,7 +339,7 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
         //case  ResizeRequest:        printf("ResizeRequest\n"); break;
         case  CirculateNotify:      printf("CirculateNotify\n"); break;
         case  CirculateRequest:     printf("CirculateRequest\n"); break;
-        case  PropertyNotify:       printf("PropertyNotify\n"); break;
+        //case  PropertyNotify:       printf("PropertyNotify\n"); break;
         case  SelectionClear:       printf("SelectionClear\n"); break;
         case  SelectionRequest:     printf("SelectionRequest\n"); break;
         case  SelectionNotify:      printf("SelectionNotify\n"); break;
@@ -427,14 +348,14 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
         case  MappingNotify:        printf("MappingNotify\n"); break;
         case  GenericEvent:         printf("GenericEvent\n"); break;
         case  LASTEvent:            printf("LASTEvent\n"); break;	/* must be bigger than any event # */        
-
+        default: printf("Default case!\n");
+        break;
         }
         renderwindow(disp, xwnd);
-        glXSwapBuffers(disp, xwnd);
     }
     printf("GLX11 mainloop done:\n");
 }
-// void X11GL::initX11() {
+// void X11GL::initX11() {y
 //     printf("(X11) InitX11 called:\n");
 //     Display *disp;
 //     Window xwnd;

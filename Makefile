@@ -199,6 +199,60 @@ src/x11gl/X11GL.cpp.s:
 	$(MAKE) -f CMakeFiles/X11GL.dir/build.make CMakeFiles/X11GL.dir/src/x11gl/X11GL.cpp.s
 .PHONY : src/x11gl/X11GL.cpp.s
 
+src/x11gl/gears.o: src/x11gl/gears.cpp.o
+
+.PHONY : src/x11gl/gears.o
+
+# target to build an object file
+src/x11gl/gears.cpp.o:
+	$(MAKE) -f CMakeFiles/X11GL.dir/build.make CMakeFiles/X11GL.dir/src/x11gl/gears.cpp.o
+.PHONY : src/x11gl/gears.cpp.o
+
+src/x11gl/gears.i: src/x11gl/gears.cpp.i
+
+.PHONY : src/x11gl/gears.i
+
+# target to preprocess a source file
+src/x11gl/gears.cpp.i:
+	$(MAKE) -f CMakeFiles/X11GL.dir/build.make CMakeFiles/X11GL.dir/src/x11gl/gears.cpp.i
+.PHONY : src/x11gl/gears.cpp.i
+
+src/x11gl/gears.s: src/x11gl/gears.cpp.s
+
+.PHONY : src/x11gl/gears.s
+
+# target to generate assembly for a file
+src/x11gl/gears.cpp.s:
+	$(MAKE) -f CMakeFiles/X11GL.dir/build.make CMakeFiles/X11GL.dir/src/x11gl/gears.cpp.s
+.PHONY : src/x11gl/gears.cpp.s
+
+src/x11gl/loader.o: src/x11gl/loader.cpp.o
+
+.PHONY : src/x11gl/loader.o
+
+# target to build an object file
+src/x11gl/loader.cpp.o:
+	$(MAKE) -f CMakeFiles/X11GL.dir/build.make CMakeFiles/X11GL.dir/src/x11gl/loader.cpp.o
+.PHONY : src/x11gl/loader.cpp.o
+
+src/x11gl/loader.i: src/x11gl/loader.cpp.i
+
+.PHONY : src/x11gl/loader.i
+
+# target to preprocess a source file
+src/x11gl/loader.cpp.i:
+	$(MAKE) -f CMakeFiles/X11GL.dir/build.make CMakeFiles/X11GL.dir/src/x11gl/loader.cpp.i
+.PHONY : src/x11gl/loader.cpp.i
+
+src/x11gl/loader.s: src/x11gl/loader.cpp.s
+
+.PHONY : src/x11gl/loader.s
+
+# target to generate assembly for a file
+src/x11gl/loader.cpp.s:
+	$(MAKE) -f CMakeFiles/X11GL.dir/build.make CMakeFiles/X11GL.dir/src/x11gl/loader.cpp.s
+.PHONY : src/x11gl/loader.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -216,6 +270,12 @@ help:
 	@echo "... src/x11gl/X11GL.o"
 	@echo "... src/x11gl/X11GL.i"
 	@echo "... src/x11gl/X11GL.s"
+	@echo "... src/x11gl/gears.o"
+	@echo "... src/x11gl/gears.i"
+	@echo "... src/x11gl/gears.s"
+	@echo "... src/x11gl/loader.o"
+	@echo "... src/x11gl/loader.i"
+	@echo "... src/x11gl/loader.s"
 .PHONY : help
 
 

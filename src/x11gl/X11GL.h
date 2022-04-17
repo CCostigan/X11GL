@@ -30,7 +30,7 @@ class X11GL {
         X11GL();
         virtual ~X11GL();
         void test(std::string, int, float);
-        int getwindow(Display* , Window* , GLXContext* , int , int , int , int , std::string&);
+        int getwindow(int , int , int , int , std::string&);
         void init();        
         void xmain(int, int, int, int, bool);        
         // void initX11();

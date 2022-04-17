@@ -4,10 +4,10 @@
 int main(int argc, char** argv) {
   
   X11GL x11gl;
-  x11gl.test("", 0, 0.0);
+  //x11gl.test("", 0, 0.0);
   //x11gl.initX11();
   //x11gl.initGL();
-  x11gl.xmain(420,42,800,600, false);
+  x11gl.xmain(420,42,1024,768, false);
   //x11gl.render();
   printf("Done!\n");
 }
