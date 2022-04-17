@@ -13,9 +13,9 @@ static Display *disp;
 static Window xwin;
 static GLXContext xctx;
 int attrib[] = {GLX_RGBA,
-                GLX_RED_SIZE, 1,
-                GLX_GREEN_SIZE, 1,
-                GLX_BLUE_SIZE, 1,
+                GLX_RED_SIZE, 8,
+                GLX_GREEN_SIZE, 8,
+                GLX_BLUE_SIZE, 8,
                 GLX_DOUBLEBUFFER,
                 GLX_DEPTH_SIZE, 1,
                 None};
@@ -77,8 +77,7 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
     root = RootWindow(disp, scrnum);
 
     visinfo = glXChooseVisual(disp, scrnum, attrib);
-    if (!visinfo)
-    {
+    if (!visinfo) {
         printf("Error: couldn't get an RGB, Double-buffered visual\n");
         exit(1);
     }
@@ -102,17 +101,17 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
                         visinfo->visual, mask, &attr);
 
     /* set hints and properties */
-    {
-        XSizeHints sizehints;
-        sizehints.x = x;
-        sizehints.y = y;
-        sizehints.width = w;
-        sizehints.height = h;
-        sizehints.flags = USSize | USPosition;
-        XSetNormalHints(disp, win, &sizehints);
-        XSetStandardProperties(disp, win, caption.c_str(), caption.c_str(),
-                               None, (char **)NULL, 0, &sizehints);
-    }
+    // if(false) {
+    //     XSizeHints sizehints;
+    //     sizehints.x = x;
+    //     sizehints.y = y;
+    //     sizehints.width = w;
+    //     sizehints.height = h;
+    //     sizehints.flags = USSize | USPosition;
+    //     XSetNormalHints(disp, win, &sizehints);
+    //     XSetStandardProperties(disp, win, caption.c_str(), caption.c_str(),
+    //                            None, (char **)NULL, 0, &sizehints);
+    // }
 
     ctx = glXCreateContext(disp, visinfo, NULL, True);
     if (!ctx)
@@ -142,24 +141,24 @@ void X11GL::reshapewindow(int w, int h) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(0.0, 0.0, zoom);    
-    printf("GLX11 reshape done: %d %d\n", w, h);
+    //printf("GLX11 reshape done: %d %d\n", w, h);
 }
-void newContext(Display *disp, Window xwin, int x, int y, int w, int h) {    
-    XVisualInfo *visinfo;
-    visinfo = glXChooseVisual(disp, scrnum, attrib);
-        XSizeHints sizehints;
-        sizehints.x = x;
-        sizehints.y = y;
-        sizehints.width = w;
-        sizehints.height = h;
-        sizehints.flags = USSize | USPosition;
-        XSetNormalHints(disp, xwin, &sizehints);
-        XSetStandardProperties(disp, xwin, caption.c_str(), caption.c_str(),
-                               None, (char **)NULL, 0, &sizehints);    
-    xctx = glXCreateContext(disp, visinfo, NULL, True);
-    XFree(visinfo);
-    XStoreName(disp, xwin, "VERY SIMPLE APPLICATION");
-}
+// void newContext(Display *disp, Window xwin, int x, int y, int w, int h) {    
+//     XVisualInfo *visinfo;
+//     visinfo = glXChooseVisual(disp, scrnum, attrib);
+//         XSizeHints sizehints;
+//         sizehints.x = x;
+//         sizehints.y = y;
+//         sizehints.width = w;
+//         sizehints.height = h;
+//         sizehints.flags = USSize | USPosition;
+//         XSetNormalHints(disp, xwin, &sizehints);
+//         XSetStandardProperties(disp, xwin, caption.c_str(), caption.c_str(),
+//                                None, (char **)NULL, 0, &sizehints);    
+//     xctx = glXCreateContext(disp, visinfo, NULL, True);
+//     XFree(visinfo);
+//     XStoreName(disp, xwin, "VERY SIMPLE APPLICATION");
+// }
 
 void X11GL::init() {
     static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0};
@@ -273,8 +272,8 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
                     //if (evnt.xkey.keycode == 38,38,40,25) vrx += 0.1;
                 }
                 break;
-            case PropertyNotify:       
-                printf("PropertyNotify %d\n", evnt.xproperty.type); 
+            case PropertyNotify: // Called when max/min/restore
+                //printf("PropertyNotify %d\n", evnt.xproperty.type); 
                 break;
             case ConfigureNotify: //Called when moving the window around
                 //printf("ConfigureNotify %d %d\n", evnt.xconfigure.type, evnt.xconfigure.event);
