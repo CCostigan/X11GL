@@ -8,6 +8,7 @@
     #include <X11/Xlib.h>
     #include <X11/Xutil.h>
     #include <X11/Xos.h>
+    #include <X11/Xatom.h>// Tried to use for toggle fullscreen
 
     #define GL_GLEXT_PROTOTYPES
     #include <GL/glx.h>

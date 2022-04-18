@@ -199,6 +199,33 @@ src/x11gl/X11GL.cpp.s:
 	$(MAKE) -f CMakeFiles/X11GL.dir/build.make CMakeFiles/X11GL.dir/src/x11gl/X11GL.cpp.s
 .PHONY : src/x11gl/X11GL.cpp.s
 
+src/x11gl/X11Main.o: src/x11gl/X11Main.cpp.o
+
+.PHONY : src/x11gl/X11Main.o
+
+# target to build an object file
+src/x11gl/X11Main.cpp.o:
+	$(MAKE) -f CMakeFiles/X11GL.dir/build.make CMakeFiles/X11GL.dir/src/x11gl/X11Main.cpp.o
+.PHONY : src/x11gl/X11Main.cpp.o
+
+src/x11gl/X11Main.i: src/x11gl/X11Main.cpp.i
+
+.PHONY : src/x11gl/X11Main.i
+
+# target to preprocess a source file
+src/x11gl/X11Main.cpp.i:
+	$(MAKE) -f CMakeFiles/X11GL.dir/build.make CMakeFiles/X11GL.dir/src/x11gl/X11Main.cpp.i
+.PHONY : src/x11gl/X11Main.cpp.i
+
+src/x11gl/X11Main.s: src/x11gl/X11Main.cpp.s
+
+.PHONY : src/x11gl/X11Main.s
+
+# target to generate assembly for a file
+src/x11gl/X11Main.cpp.s:
+	$(MAKE) -f CMakeFiles/X11GL.dir/build.make CMakeFiles/X11GL.dir/src/x11gl/X11Main.cpp.s
+.PHONY : src/x11gl/X11Main.cpp.s
+
 src/x11gl/gears.o: src/x11gl/gears.cpp.o
 
 .PHONY : src/x11gl/gears.o
@@ -270,6 +297,9 @@ help:
 	@echo "... src/x11gl/X11GL.o"
 	@echo "... src/x11gl/X11GL.i"
 	@echo "... src/x11gl/X11GL.s"
+	@echo "... src/x11gl/X11Main.o"
+	@echo "... src/x11gl/X11Main.i"
+	@echo "... src/x11gl/X11Main.s"
 	@echo "... src/x11gl/gears.o"
 	@echo "... src/x11gl/gears.i"
 	@echo "... src/x11gl/gears.s"

@@ -22,8 +22,6 @@ int attrib[] = {GLX_RGBA,
 int scrnum;
 std::string caption = "OpenGL X11 Test";
 
-
-
 X11GL::X11GL()
 {
     printf("(X11) Constructor called!\n");
@@ -130,10 +128,6 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
 
 void X11GL::reshapewindow(int w, int h) {
     GLfloat ar = (GLfloat)h / (GLfloat)w;    
-    // glXMakeCurrent(disp, None, NULL);
-    // newContext(disp, xwin, 0, 0, w, h);    
-    // glXMakeCurrent(disp, xwin, xctx);
-    //getContext();
     glViewport(0, 0, (GLint)w, (GLint)h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -143,22 +137,6 @@ void X11GL::reshapewindow(int w, int h) {
     glTranslatef(0.0, 0.0, zoom);    
     //printf("GLX11 reshape done: %d %d\n", w, h);
 }
-// void newContext(Display *disp, Window xwin, int x, int y, int w, int h) {    
-//     XVisualInfo *visinfo;
-//     visinfo = glXChooseVisual(disp, scrnum, attrib);
-//         XSizeHints sizehints;
-//         sizehints.x = x;
-//         sizehints.y = y;
-//         sizehints.width = w;
-//         sizehints.height = h;
-//         sizehints.flags = USSize | USPosition;
-//         XSetNormalHints(disp, xwin, &sizehints);
-//         XSetStandardProperties(disp, xwin, caption.c_str(), caption.c_str(),
-//                                None, (char **)NULL, 0, &sizehints);    
-//     xctx = glXCreateContext(disp, visinfo, NULL, True);
-//     XFree(visinfo);
-//     XStoreName(disp, xwin, "VERY SIMPLE APPLICATION");
-// }
 
 void X11GL::init() {
     static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0};
@@ -178,17 +156,17 @@ void X11GL::init() {
         gear1 = glGenLists(1);
             glNewList(gear1, GL_COMPILE);
             glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
-            gear(1.0, 4.0, 1.0, 20, 0.7);
+            gear(1.0, 4.0, 2.5, 20, 0.75);
         glEndList();
         gear2 = glGenLists(1);
             glNewList(gear2, GL_COMPILE);
             glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, grn);
-            gear(0.5, 2.0, 2.0, 10, 0.7);
+            gear(0.5, 2.0, 2.5, 10, 0.75);
         glEndList();
         gear3 = glGenLists(1);
             glNewList(gear3, GL_COMPILE);
             glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blu);
-            gear(1.3, 2.0, 0.5, 10, 0.7);
+            gear(1.3, 2.0, 2.5, 10, 0.75);
         glEndList();        
     glEnable(GL_NORMALIZE);
     printf("GLX11 init done:\n");
@@ -244,6 +222,7 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
         int x, y;
     } dn, up, loc;
     XWindowAttributes attribs;
+    Atom atoms[2] = { XInternAtom(disp, "_NET_WM_STATE_FULLSCREEN", False), None };
     while (!done) {
         alpha += 1.0;
         while (XPending(disp) > 0) {
@@ -263,6 +242,10 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
                     case 81: vrz-=1.0; break;
                     case 87: zoom+=1.0; break;
                     case 89: zoom-=1.0; break;
+                    case 42: // 'F'                        
+                        XChangeProperty(disp, xwnd, XInternAtom(disp, "_NET_WM_STATE", False),
+                            XA_ATOM, 32, PropModeReplace, (unsigned char *)atoms, 1);                    
+                    break;
                     default:
                         printf("You pressed %d '%c'\n", evnt.xkey.keycode, text[0]); // fflush(stdout);
                     break;
@@ -358,104 +341,3 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
     }
     printf("GLX11 mainloop done:\n");
 }
-// void X11GL::initX11() {y
-//     printf("(X11) InitX11 called:\n");
-//     Display *disp;
-//     Window xwnd;
-//     Visual *xvis;
-//     GC gctx;
-//     XSetWindowAttributes xattrs;
-//     int scrn;
-//     int white;
-//     int black;
-//     int red, green, blue;
-//     struct _point {
-//         int x;
-//         int y;
-//     } point1, point2;
-//     uint WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
-
-//     char *dispvar = getenv("DISPLAY");
-//     disp = XOpenDisplay(dispvar); //XOpenDisplay((char*)0);
-//     scrn = DefaultScreen(disp);
-//     xvis = XDefaultVisual(disp, scrn);
-
-//     gctx = XDefaultGC(disp, scrn);
-//     white = WhitePixel(disp, scrn);
-//     black = BlackPixel(disp, scrn);
-//     red = 0xFF0000; green = 0x00FF00; blue=0x0000FF;
-//     //GL Stuff start
-//     //printf("Visual depth: %d\n", xvis->depth);
-//     xattrs.border_pixel = 0x000000;
-//     xattrs.background_pixel = 0x000040;
-//     xattrs.override_redirect = True;
-//     xattrs.colormap = XCreateColormap(disp, RootWindow(disp, scrn), xvis, AllocNone);
-//     xattrs.event_mask = ExposureMask|KeyPressMask|ButtonPressMask;
-//     xwnd = XCreateWindow(disp, RootWindow(disp, scrn),
-//         0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, 24,
-//         InputOutput, xvis,
-//         CWBackPixel | CWColormap | CWBorderPixel | CWEventMask, &xattrs);
-
-// 	// Show the window
-// 	XClearWindow(disp, xwnd);
-// 	XMapRaised(disp, xwnd);
-//     //initGL(disp);///
-//     bool done = false;
-//     char text[255];
-//     KeySym key;
-//     XEvent evnt;
-//     while(!done) {
-//         XNextEvent(disp, &evnt);
-//         switch(evnt.type) {
-//             case Expose:
-//                 if(evnt.xexpose.count == 0) {
-//                     XWindowAttributes attribs;
-//                     XGetWindowAttributes(disp, xwnd, &attribs);
-//                 }
-//             break;
-//             case KeyPress:
-//                 if (XLookupString(&evnt.xkey, text, 255, &key, 0)==1) {
-//                     if(evnt.xkey.keycode==9) done = true;
-//                     else printf("You pressed '%c'\n", text[0]);  // fflush(stdout);
-//                 }
-//             break;
-//             case ButtonPress:
-//                 int x = evnt.xbutton.x; int y = evnt.xbutton.y;
-//                 XSetForeground(disp, gctx, green);
-//                 XDrawLine(disp, xwnd, gctx, x, y, point1.x, point1.y);
-//                 point1.x = x; point1.y = y;
-//                 sprintf(text, "Test %d %d", point1.x, point1.y);
-//                 XSetForeground(disp, gctx, blue);
-//                 XDrawString(disp,xwnd, gctx, point1.x, point1.y, text, strlen(text));
-//                 printf("%s\n", text);
-//             break;
-//         }
-//         //render();
-//     }
-// }
-
-// void X11GL::initGL(Display *dpy) {
-//     printf("(X11) InitGL called:\n");
-//     // Solution from https://stackoverflow.com/questions/12856820/setup-opengl-on-x11
-//     // Display *dpy( XOpenDisplay( NULL ));
-//     int screen = XDefaultScreen( dpy );
-//     const int fbCfgAttribslist[] = {
-//                 GLX_RENDER_TYPE, GLX_RGBA_BIT,
-//                 GLX_DRAWABLE_TYPE, GLX_PBUFFER_BIT,
-//                 None
-//             };
-//     int nElements = 0;
-//     GLXFBConfig * glxfbCfg = glXChooseFBConfig( dpy, screen, fbCfgAttribslist, &nElements );
-//     const int pfbCfg[] = {
-//                 GLX_PBUFFER_WIDTH, 800,
-//                 GLX_PBUFFER_HEIGHT, 600,
-//                 GLX_PRESERVED_CONTENTS, True,
-//                 GLX_LARGEST_PBUFFER, False,
-//                 None
-//             };
-//     GLXPbuffer pBufferId = glXCreatePbuffer( dpy, glxfbCfg[ 0 ], pfbCfg );
-//     XVisualInfo * visInfo = glXGetVisualFromFBConfig( dpy, glxfbCfg[ 0 ] );
-//     GLXContext  glCtx = glXCreateContext( dpy, visInfo, NULL, True );
-//     glXMakeContextCurrent( dpy, pBufferId, pBufferId, glCtx );
-//     printf("GL init done:\n");
-// }

@@ -19,6 +19,7 @@ add_executable(X11GL
     src/main.cpp
     #${SOURCE_FILES}    
     src/x11gl/X11GL.cpp
+    src/x11gl/X11Main.cpp
     src/x11gl/loader.cpp
     src/x11gl/gears.cpp
 )
