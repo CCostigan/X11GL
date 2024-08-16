@@ -35,6 +35,9 @@ target_link_libraries(X11GL ${OPENGL_LIBRARIES} ${X11_LIBRARIES} )
 # enable_testing()
 
 
+INSTALL(FILES Icons/foo.png DESTINATION /foo/Icons)
+# INSTALL(TARGETS Schrollidge DESTINATION /foo/Applications/)
+
 # https://thelinuxcode.com/cmake-cpack-linux/ 
 
 # Enable packaging
@@ -48,10 +51,10 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 # DragNDrop - For macOS bundles.
 set(CPACK_GENERATOR "DEB")
 # for DEB
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "vulkan")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "schrollidge")
 set(CPACK_PACKAGE_CONTACT "Me")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Me again")
-set(CPACK_PACKAGE_DESCRIPTION "Just learning this...")
+set(CPACK_PACKAGE_DESCRIPTION "The Schrollidge")
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/Debian/postinst")
 
 # Include CPack
