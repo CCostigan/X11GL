@@ -17,7 +17,6 @@
 
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_xlib.h>
-#include <vulkan/vulkan_xcb.h>
 
 class X11GL {
 
