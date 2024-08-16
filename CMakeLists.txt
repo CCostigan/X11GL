@@ -44,13 +44,26 @@ INSTALL(FILES res/FooIcon.png DESTINATION /foo/Icons)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 # Valid Generators
-# DEB - For Debian/Ubuntu packages.
-# RPM - For RedHat/CentOS packages.
-# ZIP - For cross-platform zip files.
-# NSIS - For Windows installers.
-# DragNDrop - For macOS bundles.
-set(CPACK_GENERATOR "DEB")
+#   7Z                           = 7-Zip file format
+#   DEB                          = Debian packages
+#   External                     = CPack External packages
+#   IFW                          = Qt Installer Framework
+#   NSIS                         = Null Soft Installer
+#   NSIS64                       = Null Soft Installer (64-bit)
+#   NuGet                        = NuGet packages
+#   RPM                          = RPM packages
+#   STGZ                         = Self extracting Tar GZip compression
+#   TBZ2                         = Tar BZip2 compression
+#   TGZ                          = Tar GZip compression
+#   TXZ                          = Tar XZ compression
+#   TZ                           = Tar Compress compression
+#   TZST                         = Tar Zstandard compression
+#   ZIP                          = ZIP file format
+#   NSIS - For Windows installers.
+#   DragNDrop - For macOS bundles.
+set(CPACK_GENERATOR "TGZ")
 # for DEB
+# set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "schrollidge")
 set(CPACK_PACKAGE_CONTACT "Me")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Me again")
