@@ -44,4 +44,5 @@ Makefile
 CMakeFiles/**
 CMakeCache.txt
 
-# X11GL
+# Don't track the executable
+X11GL
