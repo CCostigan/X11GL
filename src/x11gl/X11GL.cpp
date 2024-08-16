@@ -1,5 +1,4 @@
 #include "X11GL.h"
-#include "gears.h"
 
 // Much of this code lifted from this Apple example
 // https://opensource.apple.com/source/X11apps/X11apps-13/glxgears.c.auto.html
@@ -153,21 +152,7 @@ void X11GL::init() {
     glEnable(GL_DEPTH_TEST);
     // Load objects here...
     /* For now we copy the make the gears code */
-        gear1 = glGenLists(1);
-            glNewList(gear1, GL_COMPILE);
-            glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
-            gear(1.0, 4.0, 2.5, 20, 0.75);
-        glEndList();
-        gear2 = glGenLists(1);
-            glNewList(gear2, GL_COMPILE);
-            glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, grn);
-            gear(0.5, 2.0, 2.5, 10, 0.75);
-        glEndList();
-        gear3 = glGenLists(1);
-            glNewList(gear3, GL_COMPILE);
-            glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blu);
-            gear(1.3, 2.0, 2.5, 10, 0.75);
-        glEndList();        
+
     glEnable(GL_NORMALIZE);
     printf("GLX11 init done:\n");
 }

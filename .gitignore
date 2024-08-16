@@ -40,6 +40,8 @@
 *cache
 *marks
 build/**
+Makefile
 CMakeFiles/**
 CMakeCache.txt
-X11GL
+
+# X11GL
