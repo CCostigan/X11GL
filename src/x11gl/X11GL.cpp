@@ -58,12 +58,6 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
     scrnum = DefaultScreen(disp);
     root = RootWindow(disp, scrnum);
 
-    // visinfo = glXChooseVisual(disp, scrnum, attrib);
-    // if (!visinfo) {
-    //     printf("Error: couldn't get an RGB, Double-buffered visual\n");
-    //     exit(1);
-    // }
-
     /* window attributes */
     attr.background_pixel = 0;
     attr.border_pixel = 0;
@@ -82,28 +76,6 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
                         0, 24, InputOutput,
                         0, mask, &attr);
 
-    /* set hints and properties */
-    // if(false) {
-    //     XSizeHints sizehints;
-    //     sizehints.x = x;
-    //     sizehints.y = y;
-    //     sizehints.width = w;
-    //     sizehints.height = h;
-    //     sizehints.flags = USSize | USPosition;
-    //     XSetNormalHints(disp, win, &sizehints);
-    //     XSetStandardProperties(disp, win, caption.c_str(), caption.c_str(),
-    //                            None, (char **)NULL, 0, &sizehints);
-    // }
-
-    // ctx = glXCreateContext(disp, visinfo, NULL, True);
-    // if (!ctx)
-    // {
-    //     printf("Error: glXCreateContext failed\n");
-    //     exit(1);
-    // }
-
-    // XFree(visinfo);
-
     xwin = win;
     // xctx = ctx;
     printf("GLX11 getwindow done:\n");
@@ -115,76 +87,13 @@ void X11GL::init() {
 
 void X11GL::reshapewindow(int w, int h) {
     // GLfloat ar = (GLfloat)h / (GLfloat)w;    
-    //printf("GLX11 reshape done: %d %d\n", w, h);
+    printf("GLX11 reshape done: %d %d\n", w, h);
 }
 
-// void X11GL::init() {
-//     static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0};
-//     static GLfloat red[4] = {0.8, 0.1, 0.0, 1.0};
-//     static GLfloat grn[4] = {0.0, 0.8, 0.2, 1.0};
-//     static GLfloat blu[4] = {0.2, 0.2, 1.0, 1.0};
-
-//     glClearColor(0.0, 0.0, 0.2, 1.0);
-
-//     glLightfv(GL_LIGHT0, GL_POSITION, pos);
-//     glEnable(GL_CULL_FACE);
-//     glEnable(GL_LIGHTING);
-//     glEnable(GL_LIGHT0);
-//     glEnable(GL_DEPTH_TEST);
-//     // Load objects here...
-//     /* For now we copy the make the gears code */
-//         gear1 = glGenLists(1);
-//             glNewList(gear1, GL_COMPILE);
-//             glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
-//             // gear(1.0, 4.0, 2.5, 20, 0.75);
-//         glEndList();        
-//     glEnable(GL_NORMALIZE);
-//     printf("GLX11 init done:\n");
-// }
-
-// void X11GL::renderwindow(Display *disp, GLXDrawable xwnd) {
-//     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-//     glPushMatrix();
-
-//         glTranslatef(0.0, 0.0, zoom);    
-//         glRotatef(vrx, 1.0, 0.0, 0.0);
-//         glRotatef(vry, 0.0, 1.0, 0.0);
-//         glRotatef(vrz, 0.0, 0.0, 1.0);
-
-//         glPushMatrix();
-//             glTranslatef(-3.0, -2.0, 0.0);
-//             glRotatef(alpha, 0.0, 0.0, 1.0);
-//             glCallList(gear1);
-//         glPopMatrix();
-
-//         glPushMatrix();
-//             glTranslatef(3.1, -2.0, 0.0);
-//             glRotatef(-2.0 * alpha - 9.0, 0.0, 0.0, 1.0);
-//             glCallList(gear2);
-//         glPopMatrix();
-
-//         glPushMatrix();
-//             glTranslatef(-3.1, 4.2, 0.0);
-//             glRotatef(-2.0 * alpha - 25.0, 0.0, 0.0, 1.0);
-//             glCallList(gear3);
-//         glPopMatrix();
-
-//     glPopMatrix();
-//     glXSwapBuffers(disp, xwnd);
 
 void X11GL::renderwindow(Display *) {
 }
 
-//     //printf("Render... ");
-// }
-// void X11GL::info()
-// {
-//     printf("GL_RENDERER   = %s\n", (char *)glGetString(GL_RENDERER));
-//     printf("GL_VERSION    = %s\n", (char *)glGetString(GL_VERSION));
-//     printf("GL_VENDOR     = %s\n", (char *)glGetString(GL_VENDOR));
-//     printf("GL_EXTENSIONS = %s\n", (char *)glGetString(GL_EXTENSIONS));
-// }
 void X11GL::mainloop(Display *disp, Window xwnd)
 {
     printf("GLX11 mainloop started.\n");
