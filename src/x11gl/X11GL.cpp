@@ -5,19 +5,11 @@
 // https://github.com/davidanthonygardner/glxgears/blob/master/glxgears.c
 
 
-static GLfloat vrx = 0.0, vry = 0.0, vrz = 0.0, zoom = -40.0;
-static GLfloat alpha = 0.0;
+static float vrx = 0.0, vry = 0.0, vrz = 0.0, zoom = -40.0;
+static float alpha = 0.0;
 static int gear1, gear2, gear3;
 static Display *disp;
 static Window xwin;
-static GLXContext xctx;
-int attrib[] = {GLX_RGBA,
-                GLX_RED_SIZE, 8,
-                GLX_GREEN_SIZE, 8,
-                GLX_BLUE_SIZE, 8,
-                GLX_DOUBLEBUFFER,
-                GLX_DEPTH_SIZE, 1,
-                None};
 int scrnum;
 std::string caption = "OpenGL X11 Test";
 
@@ -32,11 +24,6 @@ X11GL::~X11GL()
 {
     printf("(X11) Destructor called!\n");
     // Shut down
-    glDeleteLists(gear1, 1);
-    glDeleteLists(gear2, 1);
-    glDeleteLists(gear3, 1);
-    glXMakeCurrent(disp, None, NULL);    
-    glXDestroyContext(disp, xctx);
     XDestroyWindow(disp, xwin);
     XCloseDisplay(disp);    
 }
@@ -52,14 +39,12 @@ void X11GL::xmain(int x, int y, int w, int h, bool showinfo)
 
     getwindow(x, y, w, h, caption);
     XMapWindow(disp, xwin);
-    glXMakeCurrent(disp, None, NULL);
-    glXMakeCurrent(disp, xwin, xctx);
     reshapewindow(w, h);
 
     if (showinfo) info();
     init();
 
-    mainloop(disp, xwin, xctx);
+    mainloop(disp, xwin);
 }
 
 int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
@@ -67,22 +52,22 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
     unsigned long mask;
     Window root;
     Window win;
-    GLXContext ctx;
+    // GLXContext ctx;
     XVisualInfo *visinfo;
 
     scrnum = DefaultScreen(disp);
     root = RootWindow(disp, scrnum);
 
-    visinfo = glXChooseVisual(disp, scrnum, attrib);
-    if (!visinfo) {
-        printf("Error: couldn't get an RGB, Double-buffered visual\n");
-        exit(1);
-    }
+    // visinfo = glXChooseVisual(disp, scrnum, attrib);
+    // if (!visinfo) {
+    //     printf("Error: couldn't get an RGB, Double-buffered visual\n");
+    //     exit(1);
+    // }
 
     /* window attributes */
     attr.background_pixel = 0;
     attr.border_pixel = 0;
-    attr.colormap = XCreateColormap(disp, root, visinfo->visual, AllocNone);
+    // attr.colormap = XCreateColormap(disp, root, visinfo->visual, AllocNone);
     attr.event_mask = ExposureMask 
                     | StructureNotifyMask 
                     //| ConfigureNotify
@@ -94,8 +79,8 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
     mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 
     win = XCreateWindow(disp, root, x, y, w, h,
-                        0, visinfo->depth, InputOutput,
-                        visinfo->visual, mask, &attr);
+                        0, 24, InputOutput,
+                        0, mask, &attr);
 
     /* set hints and properties */
     // if(false) {
@@ -110,93 +95,97 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
     //                            None, (char **)NULL, 0, &sizehints);
     // }
 
-    ctx = glXCreateContext(disp, visinfo, NULL, True);
-    if (!ctx)
-    {
-        printf("Error: glXCreateContext failed\n");
-        exit(1);
-    }
+    // ctx = glXCreateContext(disp, visinfo, NULL, True);
+    // if (!ctx)
+    // {
+    //     printf("Error: glXCreateContext failed\n");
+    //     exit(1);
+    // }
 
-    XFree(visinfo);
+    // XFree(visinfo);
 
     xwin = win;
-    xctx = ctx;
+    // xctx = ctx;
     printf("GLX11 getwindow done:\n");
     return 0;
 }
 
+void X11GL::init() {
+}
+
 void X11GL::reshapewindow(int w, int h) {
-    GLfloat ar = (GLfloat)h / (GLfloat)w;    
-    glViewport(0, 0, (GLint)w, (GLint)h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glFrustum(-1.0, 1.0, -ar, ar, 4.0, 100.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0.0, 0.0, zoom);    
+    // GLfloat ar = (GLfloat)h / (GLfloat)w;    
     //printf("GLX11 reshape done: %d %d\n", w, h);
 }
 
-void X11GL::init() {
-    static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0};
-    static GLfloat red[4] = {0.8, 0.1, 0.0, 1.0};
-    static GLfloat grn[4] = {0.0, 0.8, 0.2, 1.0};
-    static GLfloat blu[4] = {0.2, 0.2, 1.0, 1.0};
+// void X11GL::init() {
+//     static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0};
+//     static GLfloat red[4] = {0.8, 0.1, 0.0, 1.0};
+//     static GLfloat grn[4] = {0.0, 0.8, 0.2, 1.0};
+//     static GLfloat blu[4] = {0.2, 0.2, 1.0, 1.0};
 
-    glClearColor(0.0, 0.0, 0.2, 1.0);
+//     glClearColor(0.0, 0.0, 0.2, 1.0);
 
-    glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_DEPTH_TEST);
-    // Load objects here...
-    /* For now we copy the make the gears code */
+//     glLightfv(GL_LIGHT0, GL_POSITION, pos);
+//     glEnable(GL_CULL_FACE);
+//     glEnable(GL_LIGHTING);
+//     glEnable(GL_LIGHT0);
+//     glEnable(GL_DEPTH_TEST);
+//     // Load objects here...
+//     /* For now we copy the make the gears code */
+//         gear1 = glGenLists(1);
+//             glNewList(gear1, GL_COMPILE);
+//             glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
+//             // gear(1.0, 4.0, 2.5, 20, 0.75);
+//         glEndList();        
+//     glEnable(GL_NORMALIZE);
+//     printf("GLX11 init done:\n");
+// }
 
-    glEnable(GL_NORMALIZE);
-    printf("GLX11 init done:\n");
+// void X11GL::renderwindow(Display *disp, GLXDrawable xwnd) {
+//     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+//     glPushMatrix();
+
+//         glTranslatef(0.0, 0.0, zoom);    
+//         glRotatef(vrx, 1.0, 0.0, 0.0);
+//         glRotatef(vry, 0.0, 1.0, 0.0);
+//         glRotatef(vrz, 0.0, 0.0, 1.0);
+
+//         glPushMatrix();
+//             glTranslatef(-3.0, -2.0, 0.0);
+//             glRotatef(alpha, 0.0, 0.0, 1.0);
+//             glCallList(gear1);
+//         glPopMatrix();
+
+//         glPushMatrix();
+//             glTranslatef(3.1, -2.0, 0.0);
+//             glRotatef(-2.0 * alpha - 9.0, 0.0, 0.0, 1.0);
+//             glCallList(gear2);
+//         glPopMatrix();
+
+//         glPushMatrix();
+//             glTranslatef(-3.1, 4.2, 0.0);
+//             glRotatef(-2.0 * alpha - 25.0, 0.0, 0.0, 1.0);
+//             glCallList(gear3);
+//         glPopMatrix();
+
+//     glPopMatrix();
+//     glXSwapBuffers(disp, xwnd);
+
+void X11GL::renderwindow(Display *) {
 }
 
-void X11GL::renderwindow(Display *disp, GLXDrawable xwnd) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glPushMatrix();
-
-        glRotatef(vrx, 1.0, 0.0, 0.0);
-        glRotatef(vry, 0.0, 1.0, 0.0);
-        glRotatef(vrz, 0.0, 0.0, 1.0);
-
-        glPushMatrix();
-            glTranslatef(-3.0, -2.0, 0.0);
-            glRotatef(alpha, 0.0, 0.0, 1.0);
-            glCallList(gear1);
-        glPopMatrix();
-
-        glPushMatrix();
-            glTranslatef(3.1, -2.0, 0.0);
-            glRotatef(-2.0 * alpha - 9.0, 0.0, 0.0, 1.0);
-            glCallList(gear2);
-        glPopMatrix();
-
-        glPushMatrix();
-            glTranslatef(-3.1, 4.2, 0.0);
-            glRotatef(-2.0 * alpha - 25.0, 0.0, 0.0, 1.0);
-            glCallList(gear3);
-        glPopMatrix();
-
-    glPopMatrix();
-    glXSwapBuffers(disp, xwnd);
-
-    //printf("Render... ");
-}
-void X11GL::info()
-{
-    printf("GL_RENDERER   = %s\n", (char *)glGetString(GL_RENDERER));
-    printf("GL_VERSION    = %s\n", (char *)glGetString(GL_VERSION));
-    printf("GL_VENDOR     = %s\n", (char *)glGetString(GL_VENDOR));
-    printf("GL_EXTENSIONS = %s\n", (char *)glGetString(GL_EXTENSIONS));
-}
-void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
+//     //printf("Render... ");
+// }
+// void X11GL::info()
+// {
+//     printf("GL_RENDERER   = %s\n", (char *)glGetString(GL_RENDERER));
+//     printf("GL_VERSION    = %s\n", (char *)glGetString(GL_VERSION));
+//     printf("GL_VENDOR     = %s\n", (char *)glGetString(GL_VENDOR));
+//     printf("GL_EXTENSIONS = %s\n", (char *)glGetString(GL_EXTENSIONS));
+// }
+void X11GL::mainloop(Display *disp, Window xwnd)
 {
     printf("GLX11 mainloop started.\n");
     bool done = false;
@@ -257,6 +246,8 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
                 //printf("ButtonPress %d, %d, %d\n", evnt.xbutton.button, evnt.xbutton.x, evnt.xbutton.y); 
                 dn.x = evnt.xbutton.x;
                 dn.y = evnt.xbutton.y;
+                if(evnt.xbutton.button == 4) zoom -= 10.0;
+                if(evnt.xbutton.button == 5) zoom += 10.0;
                 //sprintf(text, "Test %d %d", dn.x, dn.y);
                 break;
             case  ButtonRelease:        
@@ -274,11 +265,17 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
                 loc.y = evnt.xmotion.y;
                 if(evnt.xmotion.state != 0 && false) 
                     printf("Motionotify %d %d %d %d\n", evnt.xmotion.state, evnt.xmotion.type, evnt.xmotion.x, evnt.xmotion.y); 
-                if (evnt.xmotion.state==256) {                
+                if (evnt.xmotion.state & 256) { // And with 0x0100 (left button down)
                     vry+=(loc.x-dn.x)/1.0;
                     vrx+=(loc.y-dn.y)/1.0;
                     dn.x=loc.x;
                     dn.y=loc.y;
+                }
+                if (evnt.xmotion.state & 512) { // And with 0x0200 (middle button down)
+                    //printf("Middle button Motionotify %d %d %d %d\n", evnt.xmotion.state, evnt.xmotion.type, evnt.xmotion.x, evnt.xmotion.y); 
+                }
+                if (evnt.xmotion.state & 1024) { // And with 0x0400 (right button down)
+                    //printf("Right button Motionotify %d %d %d %d\n", evnt.xmotion.state, evnt.xmotion.type, evnt.xmotion.x, evnt.xmotion.y); 
                 }
                 break;
 
@@ -322,7 +319,10 @@ void X11GL::mainloop(Display *disp, Window xwnd, GLXContext xctx)
             }
 
         }
-        renderwindow(disp, xwnd);
+        renderwindow(disp);
     }
     printf("GLX11 mainloop done:\n");
+}
+
+void X11GL::info(void){
 }

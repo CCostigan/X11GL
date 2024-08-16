@@ -3,20 +3,11 @@
 #define _X11GL_HPP
 
 
-#ifndef __APPLE__
     //#include <X11/XF86keysym.h>
     #include <X11/Xlib.h>
     #include <X11/Xutil.h>
     #include <X11/Xos.h>
     #include <X11/Xatom.h>// Tried to use for toggle fullscreen
-
-    #define GL_GLEXT_PROTOTYPES
-    #include <GL/glx.h>
-    //#include <GL/glxew.h>
-    #include <GL/glxext.h>
-    //#include <GL/glxint.h>
-    #include <GL/glu.h>
-#endif
 
 #include <string>
 #include <fstream>
@@ -28,6 +19,9 @@
 class X11GL {
 
     public:
+        float vrx = 0.0, vry = 0.0, vrz = 0.0, zoom = -40.0;
+        float alpha = 0.0;
+
         X11GL();
         virtual ~X11GL();
         void test(std::string, int, float);
@@ -37,11 +31,10 @@ class X11GL {
         // void initX11();
         // void initGL(Display *);
         void reshapewindow(int, int);
-        void renderwindow(Display *, GLXDrawable);
-        void mainloop(Display *, Window, GLXContext);
+        void renderwindow(Display *);
+        void mainloop(Display *, Window);
         void info(void);
 };
-
 
 #endif //_X11GL_HPP
 
