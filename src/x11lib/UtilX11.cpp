@@ -234,7 +234,7 @@ void X11GL::mainloop(Display *disp, Window xwnd)
         }
         renderwindow(disp);
     }
-    printf("X11 mainloop done:\n");
+    printf("(X11) mainloop done:\n");
 }
 
 void X11GL::info(void){

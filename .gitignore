@@ -48,11 +48,12 @@ CMakeFiles/**
 CMakeCache.txt
 
 # Don't track the executable or installer
-X11GL
 *Linux.deb
 *Linux.tar.gz
 install_manifest.txt
 _CPack_Packages
+
+VulkanX11
 
 # Scratchpad
 src/sample
