@@ -31,6 +31,7 @@
 *.out
 *.app
 
+# etc
 *.make
 *.cmake
 *.ninja
@@ -46,11 +47,16 @@ Makefile
 CMakeFiles/**
 CMakeCache.txt
 
-
-
-# Don't track the executable
+# Don't track the executable or installer
 X11GL
+*Linux.deb
+*Linux.tar.gz
+install_manifest.txt
+_CPack_Packages
 
 # Scratchpad
 src/sample
 src/scratch 
+
+# VSCode
+.vscode
