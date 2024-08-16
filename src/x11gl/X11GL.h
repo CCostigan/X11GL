@@ -3,11 +3,11 @@
 #define _X11GL_HPP
 
 
-    //#include <X11/XF86keysym.h>
-    #include <X11/Xlib.h>
-    #include <X11/Xutil.h>
-    #include <X11/Xos.h>
-    #include <X11/Xatom.h>// Tried to use for toggle fullscreen
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xos.h>
+#include <X11/Xatom.h>// Tried to use for toggle fullscreen
+
 
 #include <string>
 #include <fstream>
@@ -15,6 +15,9 @@
 #include <sstream>
 #include <math.h>
 
+#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_xlib.h>
+#include <vulkan/vulkan_xcb.h>
 
 class X11GL {
 

@@ -27,6 +27,11 @@ target_link_libraries(X11GL ${OPENGL_LIBRARIES} ${X11_LIBRARIES} )
 # include(CTest)u
 # enable_testing()
 
-# set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-# set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-# include(CPack)
+# https://thelinuxcode.com/cmake-cpack-linux/ 
+# Enable packaging
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+set(CPACK_GENERATOR "TGZ")
+
+# Include CPack
+include(CPack)

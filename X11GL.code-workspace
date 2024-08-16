@@ -14,7 +14,7 @@
 			"**/Thumbs.db": true,
 			"**/Testing": true,
 			"**/*cmake": true,
-			".vscode": true,
+			// ".vscode": true,
 			"CMakeFiles": true,
 			"build": true
 		},

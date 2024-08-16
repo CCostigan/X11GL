@@ -39,10 +39,18 @@
 *.bin
 *cache
 *marks
+
+# Build artifacts
 build/**
 Makefile
 CMakeFiles/**
 CMakeCache.txt
 
+
+
 # Don't track the executable
 X11GL
+
+# Scratchpad
+src/sample
+src/scratch 
