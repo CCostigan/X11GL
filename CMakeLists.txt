@@ -25,7 +25,7 @@ include_directories( ${OPENGL_INCLUDE_DIRS} ${X11_INCLUDE_DIRS} )
 add_executable(X11GL 
     src/main.cpp
     #${SOURCE_FILES}    
-    src/x11gl/X11GL.cpp
+    src/x11lib/X11.cpp
 )
 
 target_link_libraries(X11GL ${OPENGL_LIBRARIES} ${X11_LIBRARIES} )
@@ -35,7 +35,7 @@ target_link_libraries(X11GL ${OPENGL_LIBRARIES} ${X11_LIBRARIES} )
 # enable_testing()
 
 
-INSTALL(FILES res/FooIcon.png DESTINATION /foo/Icons)
+# INSTALL(FILES res/FooIcon.png DESTINATION /foo/Icons)
 # INSTALL(TARGETS Schrollidge DESTINATION /foo/Applications/)
 
 # https://thelinuxcode.com/cmake-cpack-linux/ 

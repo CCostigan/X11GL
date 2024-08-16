@@ -1,31 +1,31 @@
-#include "X11GL.h"
+#include "X11.h"
 
 // Much of this code lifted from this Apple example
 // https://opensource.apple.com/source/X11apps/X11apps-13/glxgears.c.auto.html
 // https://github.com/davidanthonygardner/glxgears/blob/master/glxgears.c
 
-// X11GL::X11GL()
-// {
-//     printf("(X11) Constructor called!\n");
-//     char *dispvar = getenv("DISPLAY");
-//     disp = XOpenDisplay(dispvar);
-// }
 
-X11GL::X11GL(int x, int y, int w, int h, bool showinfo)
+static float vrx = 0.0, vry = 0.0, vrz = 0.0, zoom = -40.0;
+static float alpha = 0.0;
+static int gear1, gear2, gear3;
+static Display *disp;
+static Window xwin;
+// static GLXContext xctx;
+// int attrib[] = {GLX_RGBA,
+//                 GLX_RED_SIZE, 8,
+//                 GLX_GREEN_SIZE, 8,
+//                 GLX_BLUE_SIZE, 8,
+//                 GLX_DOUBLEBUFFER,
+//                 GLX_DEPTH_SIZE, 1,
+//                 None};
+int scrnum;
+std::string caption = "OpenGL X11 Test";
+
+X11GL::X11GL()
 {
-    vrx = 0.0, vry = 0.0, vrz = 0.0, zoom = -40.0;
-    alpha = 0.0;
     printf("(X11) Constructor called!\n");
     char *dispvar = getenv("DISPLAY");
-    dispvar ? dispvar : ":0";
     disp = XOpenDisplay(dispvar);
-    getwindow(x, y, w, h, caption);
-    XMapWindow(disp, xwin);
-    reshapewindow(width, height);
-
-    if (showinfo) info();
-    init();
-
 }
 
 X11GL::~X11GL()
@@ -36,24 +36,28 @@ X11GL::~X11GL()
     XCloseDisplay(disp);    
 }
 
-void X11GL::test(std::string s, int i, float d)
-{
-    printf("(X11) test called: %s %d %f\n", s.c_str(), i, d);
+void X11GL::init(int x, int y, int w, int h, bool showinfo) {
+    printf("(X11) init called:\n");
+    getwindow(x, y, w, h, caption);
+    XMapWindow(disp, xwin);
+    reshapewindow(w, h);
+
+    if (showinfo) info();    
 }
 
 void X11GL::xmain()
 {
-    printf("(X11) XMain called:\n");
-
-    // getwindow(x, y, w, h, caption);
+    printf("(X11) xmain called:\n");
     mainloop(disp, xwin);
 }
 
 int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
-    xloc = x;
-    yloc = y;
-    width = w;
-    height = h;
+    XSetWindowAttributes attr;
+    unsigned long mask;
+    Window root;
+    Window win;
+    // GLXContext ctx;
+    XVisualInfo *visinfo;
 
     scrnum = DefaultScreen(disp);
     root = RootWindow(disp, scrnum);
@@ -72,8 +76,10 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
                 ;
     mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 
+    // win = XCreateSimpleWindow(disp, root, x,y,w,h, 0, 0, 0);
+
     win = XCreateWindow(disp, root, x, y, w, h,
-                        0, deppth, InputOutput,
+                        0, 24, InputOutput,
                         0, mask, &attr);
 
     xwin = win;
@@ -82,16 +88,12 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
     return 0;
 }
 
-void X11GL::init() {
-}
-
 void X11GL::reshapewindow(int w, int h) {
-    // GLfloat ar = (GLfloat)h / (GLfloat)w;    
-    printf("GLX11 reshape done: %d %d\n", w, h);
+    printf("(X11) reshapewindow called:\n");    
 }
-
 
 void X11GL::renderwindow(Display *) {
+    // printf("(X11) renderwindow called:\n");    
 }
 
 void X11GL::mainloop(Display *disp, Window xwnd)
@@ -234,4 +236,5 @@ void X11GL::mainloop(Display *disp, Window xwnd)
 }
 
 void X11GL::info(void){
+    
 }
