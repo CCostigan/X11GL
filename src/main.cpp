@@ -1,6 +1,7 @@
-#include <stdio.h>
-#include "x11lib/X11.h"
+#include "x11lib/UtilX11.h"
+#include "vk/VulkanUtil.hpp"
 
+#include <stdio.h>
 
 // https://code.visualstudio.com/docs/cpp/config-linux
 // https://www.youtube.com/watch?v=45MIykWJ-C4
@@ -12,14 +13,15 @@
 // https://www.youtube.com/watch?v=AVXYq8aL47Q  Command line 
 // https://www.youtube.com/watch?v=6avJHaC3C2U - Unsettling
 
-X11GL x11gl;
+
+void run() {
+  X11GL x11gl;
+  x11gl.init(420,42,800,600, false);
+  x11gl.xmain();
+}
 
 int main(int argc, char** argv) {
-  
-  x11gl.init(420,42,800,600, false);
-
-  x11gl.xmain();
-
-  //x11gl.render();
-  printf("Done!\n");
+  printf("(Main) Starting up\n");
+  run();
+  printf("(Main) Shutting down!\n");
 }

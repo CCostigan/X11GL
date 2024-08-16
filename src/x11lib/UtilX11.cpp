@@ -1,6 +1,6 @@
-#include "X11.h"
+#include "UtilX11.h"
 
-// Much of this code lifted from this Apple example
+// Some good starting points
 // https://opensource.apple.com/source/X11apps/X11apps-13/glxgears.c.auto.html
 // https://github.com/davidanthonygardner/glxgears/blob/master/glxgears.c
 
@@ -52,6 +52,8 @@ void X11GL::xmain()
 }
 
 int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
+    printf("(X11) getwindow start:\n");
+
     XSetWindowAttributes attr;
     unsigned long mask;
     Window root;
@@ -84,7 +86,7 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
 
     xwin = win;
     // xctx = ctx;
-    printf("GLX11 getwindow done:\n");
+    printf("(X11) getwindow done:\n");
     return 0;
 }
 
@@ -98,7 +100,7 @@ void X11GL::renderwindow(Display *) {
 
 void X11GL::mainloop(Display *disp, Window xwnd)
 {
-    printf("GLX11 mainloop started.\n");
+    printf("(X11) mainloop started.\n");
     bool done = false;
     char text[255];
     KeySym key;
@@ -148,10 +150,10 @@ void X11GL::mainloop(Display *disp, Window xwnd)
                 reshapewindow(evnt.xconfigure.width ,evnt.xconfigure.height);
                 break;
             case ResizeRequest: 
-                printf("ResizeRequest.  Don't use this one\n");   
+                printf("-ResizeRequest.  Don't use this one\n");   
                 break;
             case ClientMessage:
-                printf("ClientMessage case hit!\n");
+                printf("-ClientMessage case hit!\n");
                 break;
             case ButtonPress:
                 //printf("ButtonPress %d, %d, %d\n", evnt.xbutton.button, evnt.xbutton.x, evnt.xbutton.y); 
@@ -175,7 +177,7 @@ void X11GL::mainloop(Display *disp, Window xwnd)
                 loc.x = evnt.xmotion.x;
                 loc.y = evnt.xmotion.y;
                 if(evnt.xmotion.state != 0 && false) 
-                    printf("Motionotify %d %d %d %d\n", evnt.xmotion.state, evnt.xmotion.type, evnt.xmotion.x, evnt.xmotion.y); 
+                    printf("-Motionotify %d %d %d %d\n", evnt.xmotion.state, evnt.xmotion.type, evnt.xmotion.x, evnt.xmotion.y); 
                 if (evnt.xmotion.state & 256) { // And with 0x0100 (left button down)
                     vry+=(loc.x-dn.x)/1.0;
                     vrx+=(loc.y-dn.y)/1.0;
@@ -190,41 +192,41 @@ void X11GL::mainloop(Display *disp, Window xwnd)
                 }
                 break;
 
-            //case  KeyPress:             printf("KeyPress"); break;
-            //case  KeyRelease:           printf("KeyRelease"); break;
-            //case  ButtonPress:          printf("ButtonPress"); break;
-            //case  ButtonRelease:        printf("ButtonRelease\n"); break;
-            //case  MotionNotify:         printf("Motionotify\n"); break;
-            case  EnterNotify:          printf("EnterNotify\n"); break;
-            case  LeaveNotify:          printf("LeaveNotify\n"); break;
-            case  FocusIn:              printf("FocusIn\n"); break;
-            case  FocusOut:             printf("FocusOut\n"); break;
-            case  KeymapNotify:         printf("KeyMapNotify\n"); break;
-            //case  Expose:               printf("Expose\n"); break;
-            case  GraphicsExpose:       printf("GraphicsExpose\n"); break;
-            case  NoExpose:             printf("NoExpose\n"); break;
-            case  VisibilityNotify:     printf("VisibilityNotify\n"); break;
-            case  CreateNotify:         printf("CreateNotify\n"); break;
-            case  DestroyNotify:        printf("DestroyNotify\n"); break;
-            case  UnmapNotify:          printf("UnmapNotify\n"); break;
-            case  MapNotify:            printf("MapNotify\n"); break;
-            case  MapRequest:           printf("MapRequest\n"); break;
-            case  ReparentNotify:       printf("ReparentNotify\n"); break;
-            //case  ConfigureNotify:      printf("ConfigureNotify\n"); break;
-            case  ConfigureRequest:     printf("ConfigureRequest\n"); break;
-            case  GravityNotify:        printf("GravityNotify\n"); break;
-            //case  ResizeRequest:        printf("ResizeRequest\n"); break;
-            case  CirculateNotify:      printf("CirculateNotify\n"); break;
-            case  CirculateRequest:     printf("CirculateRequest\n"); break;
-            //case  PropertyNotify:       printf("PropertyNotify\n"); break;
-            case  SelectionClear:       printf("SelectionClear\n"); break;
-            case  SelectionRequest:     printf("SelectionRequest\n"); break;
-            case  SelectionNotify:      printf("SelectionNotify\n"); break;
-            case  ColormapNotify:       printf("ColormapNotify\n"); break;
-            //case  ClientMessage:        printf("ClientMessage\n"); break;
-            case  MappingNotify:        printf("MappingNotify\n"); break;
-            case  GenericEvent:         printf("GenericEvent\n"); break;
-            case  LASTEvent:            printf("LASTEvent\n"); break;	/* must be bigger than any event # */        
+            //case  KeyPress:             printf("-KeyPress"); break;
+            //case  KeyRelease:           printf("-KeyRelease"); break;
+            //case  ButtonPress:          printf("-ButtonPress"); break;
+            //case  ButtonRelease:        printf("-ButtonRelease\n"); break;
+            //case  MotionNotify:         printf("-Motionotify\n"); break;
+            case  EnterNotify:          printf("-EnterNotify\n"); break;
+            case  LeaveNotify:          printf("-LeaveNotify\n"); break;
+            case  FocusIn:              printf("-FocusIn\n"); break;
+            case  FocusOut:             printf("-FocusOut\n"); break;
+            case  KeymapNotify:         printf("-KeyMapNotify\n"); break;
+            //case  Expose:               printf("-Expose\n"); break;
+            case  GraphicsExpose:       printf("-GraphicsExpose\n"); break;
+            case  NoExpose:             printf("-NoExpose\n"); break;
+            case  VisibilityNotify:     printf("-VisibilityNotify\n"); break;
+            case  CreateNotify:         printf("-CreateNotify\n"); break;
+            case  DestroyNotify:        printf("-DestroyNotify\n"); break;
+            case  UnmapNotify:          printf("-UnmapNotify\n"); break;
+            case  MapNotify:            printf("-MapNotify\n"); break;
+            case  MapRequest:           printf("-MapRequest\n"); break;
+            case  ReparentNotify:       printf("-ReparentNotify\n"); break;
+            //case  ConfigureNotify:      printf("-ConfigureNotify\n"); break;
+            case  ConfigureRequest:     printf("-ConfigureRequest\n"); break;
+            case  GravityNotify:        printf("-GravityNotify\n"); break;
+            //case  ResizeRequest:        printf("-ResizeRequest\n"); break;
+            case  CirculateNotify:      printf("-CirculateNotify\n"); break;
+            case  CirculateRequest:     printf("-CirculateRequest\n"); break;
+            //case  PropertyNotify:       printf("-PropertyNotify\n"); break;
+            case  SelectionClear:       printf("-SelectionClear\n"); break;
+            case  SelectionRequest:     printf("-SelectionRequest\n"); break;
+            case  SelectionNotify:      printf("-SelectionNotify\n"); break;
+            case  ColormapNotify:       printf("-ColormapNotify\n"); break;
+            //case  ClientMessage:        printf("-ClientMessage\n"); break;
+            case  MappingNotify:        printf("-MappingNotify\n"); break;
+            case  GenericEvent:         printf("-GenericEvent\n"); break;
+            case  LASTEvent:            printf("-LASTEvent\n"); break;	/* must be bigger than any event # */        
             default: //printf("Default case!\n");
             break;
             }
@@ -232,7 +234,7 @@ void X11GL::mainloop(Display *disp, Window xwnd)
         }
         renderwindow(disp);
     }
-    printf("GLX11 mainloop done:\n");
+    printf("X11 mainloop done:\n");
 }
 
 void X11GL::info(void){
