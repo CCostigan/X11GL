@@ -35,7 +35,7 @@ target_link_libraries(X11GL ${OPENGL_LIBRARIES} ${X11_LIBRARIES} )
 # enable_testing()
 
 
-INSTALL(FILES Icons/foo.png DESTINATION /foo/Icons)
+INSTALL(FILES res/FooIcon.png DESTINATION /foo/Icons)
 # INSTALL(TARGETS Schrollidge DESTINATION /foo/Applications/)
 
 # https://thelinuxcode.com/cmake-cpack-linux/ 
