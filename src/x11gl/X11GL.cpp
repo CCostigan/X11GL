@@ -4,20 +4,28 @@
 // https://opensource.apple.com/source/X11apps/X11apps-13/glxgears.c.auto.html
 // https://github.com/davidanthonygardner/glxgears/blob/master/glxgears.c
 
+// X11GL::X11GL()
+// {
+//     printf("(X11) Constructor called!\n");
+//     char *dispvar = getenv("DISPLAY");
+//     disp = XOpenDisplay(dispvar);
+// }
 
-static float vrx = 0.0, vry = 0.0, vrz = 0.0, zoom = -40.0;
-static float alpha = 0.0;
-static int gear1, gear2, gear3;
-static Display *disp;
-static Window xwin;
-int scrnum;
-std::string caption = "OpenGL X11 Test";
-
-X11GL::X11GL()
+X11GL::X11GL(int x, int y, int w, int h, bool showinfo)
 {
+    vrx = 0.0, vry = 0.0, vrz = 0.0, zoom = -40.0;
+    alpha = 0.0;
     printf("(X11) Constructor called!\n");
     char *dispvar = getenv("DISPLAY");
+    dispvar ? dispvar : ":0";
     disp = XOpenDisplay(dispvar);
+    getwindow(x, y, w, h, caption);
+    XMapWindow(disp, xwin);
+    reshapewindow(width, height);
+
+    if (showinfo) info();
+    init();
+
 }
 
 X11GL::~X11GL()
@@ -33,27 +41,19 @@ void X11GL::test(std::string s, int i, float d)
     printf("(X11) test called: %s %d %f\n", s.c_str(), i, d);
 }
 
-void X11GL::xmain(int x, int y, int w, int h, bool showinfo)
+void X11GL::xmain()
 {
     printf("(X11) XMain called:\n");
 
-    getwindow(x, y, w, h, caption);
-    XMapWindow(disp, xwin);
-    reshapewindow(w, h);
-
-    if (showinfo) info();
-    init();
-
+    // getwindow(x, y, w, h, caption);
     mainloop(disp, xwin);
 }
 
 int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
-    XSetWindowAttributes attr;
-    unsigned long mask;
-    Window root;
-    Window win;
-    // GLXContext ctx;
-    XVisualInfo *visinfo;
+    xloc = x;
+    yloc = y;
+    width = w;
+    height = h;
 
     scrnum = DefaultScreen(disp);
     root = RootWindow(disp, scrnum);
@@ -73,7 +73,7 @@ int X11GL::getwindow(int x, int y, int w, int h, std::string &caption) {
     mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 
     win = XCreateWindow(disp, root, x, y, w, h,
-                        0, 24, InputOutput,
+                        0, deppth, InputOutput,
                         0, mask, &attr);
 
     xwin = win;

@@ -19,15 +19,28 @@
 class X11GL {
 
     public:
-        float vrx = 0.0, vry = 0.0, vrz = 0.0, zoom = -40.0;
-        float alpha = 0.0;
+        XSetWindowAttributes attr;
+        unsigned long mask;
+        Window root;
+        Window win;
+        // GLXContext ctx;
+        XVisualInfo *visinfo;
 
-        X11GL();
+        float vrx, vry, vrz, zoom;
+        float alpha;
+        int xloc, yloc, width, height, deppth = 24;
+        Display *disp;
+        Window xwin;
+        int scrnum;
+        std::string caption = "OpenGL X11 Test";
+
+        // X11GL();
+        X11GL(int x, int y, int w, int h, bool showinfo);
         virtual ~X11GL();
         void test(std::string, int, float);
         int getwindow(int , int , int , int , std::string&);
         void init();        
-        void xmain(int, int, int, int, bool);        
+        void xmain();        
         // void initX11();
         // void initGL(Display *);
         void reshapewindow(int, int);
